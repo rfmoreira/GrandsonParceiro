@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/bt_home"
+        android:icon="@drawable/ic_home"
+        android:title="Solicitações"
+        android:visible="true"
+        />
+    <item
+        android:id="@+id/bt_servAgendado"
+        android:icon="@drawable/ic_claendar_ok"
+        android:title="Aceitos"/>
+    <item
+        android:id="@+id/bt_servConcluido"
+        android:icon="@drawable/ic_concluido"
+        android:title="Concluídos"/>
+    <item
+        android:id="@+id/bt_perf"
+        android:icon="@drawable/ic_perfil"
+        android:title="Perfil"/>
+
+
+</menu>
