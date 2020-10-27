@@ -405,7 +405,6 @@
 
             </LinearLayout>
 
-
         </LinearLayout>
 
     </ScrollView>
@@ -433,8 +432,6 @@
 
 
     </LinearLayout>
-
-
 
 
 </RelativeLayout>
