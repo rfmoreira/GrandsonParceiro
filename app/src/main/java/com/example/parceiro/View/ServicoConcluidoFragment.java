@@ -13,7 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.parceiro.Model.ListaParceiro;
+import com.example.parceiro.Model.ListaCliente;
 import com.example.parceiro.R;
 import com.example.parceiro.Utils.AdapterListVewHomeCliente;
 
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 public class ServicoConcluidoFragment extends Fragment {
 
-    private ArrayList<ListaParceiro> listaParceiros;
+    private ArrayList<ListaCliente> listaClientes;
     private ListView listServConcluido;
 
     @Nullable
@@ -32,12 +32,12 @@ public class ServicoConcluidoFragment extends Fragment {
 
         listServConcluido = (ListView) view.findViewById(R.id.listServConcluido);
 
-        listaParceiros = preencherList();
+        listaClientes = preencherList();
 
 
         listServConcluido.setVisibility(View.VISIBLE);
         // Chamando Adaptador para preenchimento do list View
-        AdapterListVewHomeCliente adapter = new AdapterListVewHomeCliente(this.getContext(),listaParceiros);
+        AdapterListVewHomeCliente adapter = new AdapterListVewHomeCliente(this.getContext(), listaClientes);
         // Setenado adptador no list view
         listServConcluido.setAdapter(adapter);
 
@@ -46,7 +46,7 @@ public class ServicoConcluidoFragment extends Fragment {
         listServConcluido.setOnItemClickListener(new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-            Toast.makeText(view.getContext(), "Posição: "+ listaParceiros.get(position).getNome(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(view.getContext(), "Posição: "+ listaClientes.get(position).getNome(), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(view.getContext(), AvaliacaoCliente.class);
             startActivity(intent);
         }
@@ -56,13 +56,13 @@ public class ServicoConcluidoFragment extends Fragment {
 
 
     // Metodo para Preencher ListView
-    private ArrayList<ListaParceiro> preencherList() {
-        ArrayList<ListaParceiro> list = new ArrayList<ListaParceiro>();
-        ListaParceiro p = new ListaParceiro();
-        ListaParceiro p1 = new ListaParceiro();
-        ListaParceiro p2 = new ListaParceiro();
-        ListaParceiro p3 = new ListaParceiro();
-        ListaParceiro p4 = new ListaParceiro();
+    private ArrayList<ListaCliente> preencherList() {
+        ArrayList<ListaCliente> list = new ArrayList<ListaCliente>();
+        ListaCliente p = new ListaCliente();
+        ListaCliente p1 = new ListaCliente();
+        ListaCliente p2 = new ListaCliente();
+        ListaCliente p3 = new ListaCliente();
+        ListaCliente p4 = new ListaCliente();
         p.setNome("Rafael");
         list.add(p);
         p1.setNome("Luan");

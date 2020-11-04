@@ -16,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.parceiro.Api.RetrofitClientGrandson;
-import com.example.parceiro.Model.ServicosAgendados;
+import com.example.parceiro.Model.ServicosAceitos;
 import com.example.parceiro.R;
 import com.example.parceiro.Services.RetrofitServiceGrandson;
 import com.example.parceiro.Utils.AdapterListVewServicosAgendados;
@@ -33,7 +33,7 @@ public class ServicosAceitosFragment extends Fragment {
 
 
     private ListView listView;
-    private List<ServicosAgendados> lServicosAgendados = new ArrayList<>();
+    private List<ServicosAceitos> lServicosAgendados = new ArrayList<>();
     private TextView textInfo;
 
     private String auth;
@@ -84,11 +84,11 @@ public class ServicosAceitosFragment extends Fragment {
             //Instanciando a interface
             RetrofitServiceGrandson restService = RetrofitClientGrandson.getService();
             //Passando os dados para consulta
-            Call<List<ServicosAgendados>> call = restService.getServicosAgendados("Bearer "+auth);
+            Call<List<ServicosAceitos>> call = restService.getServicosAceitos("Bearer "+auth);
 
-            call.enqueue(new Callback<List<ServicosAgendados>>() {
+            call.enqueue(new Callback<List<ServicosAceitos>>() {
                 @Override
-                public void onResponse(Call<List<ServicosAgendados>> call, Response<List<ServicosAgendados>> response) {
+                public void onResponse(Call<List<ServicosAceitos>> call, Response<List<ServicosAceitos>> response) {
 
                     Log.i("Response Code", String.valueOf(response.code()));
 
@@ -117,7 +117,7 @@ public class ServicosAceitosFragment extends Fragment {
                 }
 
                 @Override
-                public void onFailure(Call<List<ServicosAgendados>> call, Throwable t) {
+                public void onFailure(Call<List<ServicosAceitos>> call, Throwable t) {
                     Toast.makeText(getContext(), "Erro", Toast.LENGTH_SHORT).show();
                     Log.i("Falha:  ",t.getMessage());
 

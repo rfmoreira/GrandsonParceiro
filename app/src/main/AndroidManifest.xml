@@ -17,41 +17,42 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name="com.example.parceiro.View.PerfilCliente"></activity>
-        <activity android:name="com.example.parceiro.View.EditarSenha" />
-        <activity android:name="com.example.parceiro.View.EditarDadosBancarios" />
-        <activity android:name="com.example.parceiro.View.CadastroClienteFoto" />
-        <activity android:name="com.example.parceiro.View.CadastroParceiro2" />
-        <activity android:name="com.example.parceiro.View.ApresentacaoGrandson" />
-        <activity android:name="com.example.parceiro.View.AvaliacaoCliente" />
+        <activity android:name=".View.PerfilCliente"></activity>
+        <activity android:name=".View.SolicitacaoServico" />
+        <activity android:name=".View.EditarSenha" />
+        <activity android:name=".View.EditarDadosBancarios" />
+        <activity android:name=".View.CadastroClienteFoto" />
+        <activity android:name=".View.CadastroParceiro2" />
+        <activity android:name=".View.ApresentacaoGrandson" />
+        <activity android:name=".View.AvaliacaoCliente" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/map_api_key" />
 
         <activity
-            android:name="com.example.parceiro.View.DetalharServicoAceito"
+            android:name=".View.DetalharServicoAceito"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.example.parceiro.View.HomeParceiro"
+            android:name=".View.HomeParceiro"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.example.parceiro.View.LoginGrandson"
+            android:name=".View.LoginGrandson"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.example.parceiro.View.CadastroParceiro"
+            android:name=".View.CadastroParceiro"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.example.parceiro.View.DadosBancarioCliente"
+            android:name=".View.DadosBancarioCliente"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.example.parceiro.View.DadosBancarioParceiro"
+            android:name=".View.DadosBancarioParceiro"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.example.parceiro.View.CadastroColaborador"
+            android:name=".View.CadastroColaborador"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity android:name="com.example.parceiro.View.Cadastro" />
-        <activity android:name="com.example.parceiro.View.Grandson">
+        <activity android:name=".View.Cadastro" />
+        <activity android:name=".View.Grandson">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

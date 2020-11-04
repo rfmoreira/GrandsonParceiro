@@ -3,14 +3,13 @@ package com.example.parceiro.Model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ServicosAgendados {
-
+public class ServicosAceitos {
     @SerializedName("foto")
     @Expose
-    private String foto;
-    @SerializedName("idParceiro")
+    private Foto foto;
+    @SerializedName("idCliente")
     @Expose
-    private Integer idParceiro;
+    private Integer idCliente;
     @SerializedName("idServico")
     @Expose
     private Integer idServico;
@@ -21,20 +20,20 @@ public class ServicosAgendados {
     @Expose
     private String nota;
 
-    public String getFoto() {
+    public Foto getFoto() {
         return foto;
     }
 
-    public void setFoto(String foto) {
+    public void setFoto(Foto foto) {
         this.foto = foto;
     }
 
-    public Integer getIdParceiro() {
-        return idParceiro;
+    public Integer getIdCliente() {
+        return idCliente;
     }
 
-    public void setIdParceiro(Integer idParceiro) {
-        this.idParceiro = idParceiro;
+    public void setIdCliente(Integer idCliente) {
+        this.idCliente = idCliente;
     }
 
     public Integer getIdServico() {
@@ -60,5 +59,6 @@ public class ServicosAgendados {
     public void setNota(String nota) {
         this.nota = nota;
     }
+
 
 }

@@ -87,10 +87,12 @@ public class CadastroParceiro2 extends AppCompatActivity {
                     textInputBairro.getEditText().setError("Campo Vazio!");
                     textInputBairro.getEditText().requestFocus();
                 }else {
+                    formCadastroParceiro.setCidade(textInputBairro.getEditText().getText().toString());
                     if(MetodosCadastro.isCampoVazio(textInputEstado.getEditText().getText().toString())){
                         textInputEstado.getEditText().setError("Campo Vazio!");
                         textInputEstado.getEditText().requestFocus();
                     }else {
+                        formCadastroParceiro.setEstado(textInputEstado.getEditText().getText().toString());
                         if(MetodosCadastro.isCampoVazio(textInputNumero.getEditText().getText().toString())){
                             textInputNumero.getEditText().setError("Campo Vazio!");
                             textInputNumero.getEditText().requestFocus();

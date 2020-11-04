@@ -14,7 +14,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.parceiro.Api.RetrofitClientGrandson;
-import com.example.parceiro.Model.CartaoCredito;
+import com.example.parceiro.Model.DadosBancarios;
 import com.example.parceiro.Model.FormEditarCartao;
 import com.example.parceiro.R;
 import com.example.parceiro.Services.RetrofitServiceGrandson;
@@ -38,7 +38,7 @@ public class EditarDadosBancarios extends AppCompatActivity {
     private Button bt_edit_cartao,bt_salvar_cartao;
     private String auth;
 
-    private CartaoCredito cartaoCredito;
+    private DadosBancarios dadosBancarios;
     private FormEditarCartao formEditarCartao;
     private ProgressDialog progressDialog;
 
@@ -91,7 +91,7 @@ public class EditarDadosBancarios extends AppCompatActivity {
                 imm.showSoftInput(editTextNomeCartao.getEditText(), InputMethodManager.SHOW_IMPLICIT);
 
                 editTextNumCartao.getEditText().setFocusableInTouchMode(true);
-                editTextNumCartao.getEditText().setText(cartaoCredito.getNumeroDoCartao());
+                editTextNumCartao.getEditText().setText(dadosBancarios.getAgencia());
                 editTextCodSegCartao.getEditText().setFocusableInTouchMode(true);
                 editTextValidade.getEditText().setFocusableInTouchMode(true);
                 editTextCodSegCartao.getEditText().setText("");
@@ -165,13 +165,13 @@ public class EditarDadosBancarios extends AppCompatActivity {
         //Instanciando a interface
         RetrofitServiceGrandson restService = RetrofitClientGrandson.getService();
         //Passando os dados para consulta
-        Call<CartaoCredito> call = restService.alterarCartao("Bearer "+auth,formEditarCartao);
+        Call<DadosBancarios> call = restService.alterarCartao("Bearer "+auth,formEditarCartao);
 
-        call.enqueue(new Callback<CartaoCredito>() {
+        call.enqueue(new Callback<DadosBancarios>() {
             @Override
-            public void onResponse(Call<CartaoCredito> call, Response<CartaoCredito> response) {
+            public void onResponse(Call<DadosBancarios> call, Response<DadosBancarios> response) {
                 if(response.isSuccessful()){
-                    cartaoCredito = response.body();
+                    dadosBancarios = response.body();
 
                     Toast.makeText(EditarDadosBancarios.this, "Cartão Alterado com Sucesso", Toast.LENGTH_SHORT).show();
                     finish();
@@ -183,7 +183,7 @@ public class EditarDadosBancarios extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<CartaoCredito> call, Throwable t) {
+            public void onFailure(Call<DadosBancarios> call, Throwable t) {
                 Toast.makeText(EditarDadosBancarios.this, "Erro Servidor", Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
             }
@@ -197,30 +197,30 @@ public class EditarDadosBancarios extends AppCompatActivity {
         // Instanciando cliente WS
         RetrofitServiceGrandson restService = RetrofitClientGrandson.getService();
         //Passando os dados para consulta
-        Call<CartaoCredito> call = restService.getCarteira("Bearer "+auth);
+        Call<DadosBancarios> call = restService.getCarteira("Bearer "+auth);
 
-        call.enqueue(new Callback<CartaoCredito>() {
+        call.enqueue(new Callback<DadosBancarios>() {
             @Override
-            public void onResponse(Call<CartaoCredito> call, Response<CartaoCredito> response) {
+            public void onResponse(Call<DadosBancarios> call, Response<DadosBancarios> response) {
 
                 if(response.isSuccessful()){
-                    cartaoCredito = response.body();
+                    dadosBancarios = response.body();
 
-                    editTextNomeCartao.getEditText().setText(cartaoCredito.getNomeNoCartao());
-                    String t = cartaoCredito.getNumeroDoCartao().substring
-                            (cartaoCredito.getNumeroDoCartao().length() - 4);
+                    /*editTextNomeCartao.getEditText().setText(dadosBancarios.getNomeNoCartao());
+                    String t = dadosBancarios.getNumeroDoCartao().substring
+                            (dadosBancarios.getNumeroDoCartao().length() - 4);
 
                     editTextNumCartao.getEditText().setText("**** **** **** "+ t);
-                    String[] validade = cartaoCredito.getDataDeVencimento().split("-");
+                    String[] validade = dadosBancarios.getDataDeVencimento().split("-");
                     editTextValidade.getEditText().setText(validade[1]+validade[0]);
-                    editTextCodSegCartao.getEditText().setText("***");
+                    editTextCodSegCartao.getEditText().setText("***");*/
 
                 }else {
 
                 }
             }
             @Override
-            public void onFailure(Call<CartaoCredito> call, Throwable t) {
+            public void onFailure(Call<DadosBancarios> call, Throwable t) {
 
             }
         });

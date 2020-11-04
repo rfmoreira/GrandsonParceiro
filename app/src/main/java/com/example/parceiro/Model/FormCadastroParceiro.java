@@ -26,14 +26,20 @@ public class FormCadastroParceiro implements Parcelable {
     private String endereco;
     @SerializedName("numero")
     private int numero;
+    @SerializedName("estado")
+    private String estado;
+    @SerializedName("cidade")
+    private String cidade;
     @SerializedName("complemento")
     private String complemento;
 
     //Terceira Tela cadastro
+    @SerializedName("nomeBeneficiario")
+    private String nomeBeneficiario;
     @SerializedName("cpf")
     private  String cpf;
     @SerializedName("agencia")
-    private String agencia;
+    private int agencia;
     @SerializedName("banco")
     private String banco;
     @SerializedName("conta")
@@ -59,9 +65,12 @@ public class FormCadastroParceiro implements Parcelable {
         cep = in.readInt();
         endereco = in.readString();
         numero = in.readInt();
+        cidade = in.readString();
+        estado = in.readString();
         complemento = in.readString();
+        nomeBeneficiario = in.readString();
         cpf = in.readString();
-        agencia = in.readString();
+        agencia = in.readInt();
         banco = in.readString();
         conta = in.readInt();
         tipo = in.readString();
@@ -136,12 +145,36 @@ public class FormCadastroParceiro implements Parcelable {
         this.numero = numero;
     }
 
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public String getCidade() {
+        return cidade;
+    }
+
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
+    }
+
     public String getComplemento() {
         return complemento;
     }
 
     public void setComplemento(String complemento) {
         this.complemento = complemento;
+    }
+
+    public String getNomeBeneficiario() {
+        return nomeBeneficiario;
+    }
+
+    public void setNomeBeneficiario(String nomeBeneficiario) {
+        this.nomeBeneficiario = nomeBeneficiario;
     }
 
     public String getCpf() {
@@ -152,11 +185,11 @@ public class FormCadastroParceiro implements Parcelable {
         this.cpf = cpf;
     }
 
-    public String getAgencia() {
+    public int getAgencia() {
         return agencia;
     }
 
-    public void setAgencia(String agencia) {
+    public void setAgencia(int agencia) {
         this.agencia = agencia;
     }
 
@@ -223,9 +256,12 @@ public class FormCadastroParceiro implements Parcelable {
         parcel.writeInt(cep);
         parcel.writeString(endereco);
         parcel.writeInt(numero);
+        parcel.writeString(cidade);
+        parcel.writeString(estado);
         parcel.writeString(complemento);
+        parcel.writeString(nomeBeneficiario);
         parcel.writeString(cpf);
-        parcel.writeString(agencia);
+        parcel.writeInt(agencia);
         parcel.writeString(banco);
         parcel.writeInt(conta);
         parcel.writeString(tipo);

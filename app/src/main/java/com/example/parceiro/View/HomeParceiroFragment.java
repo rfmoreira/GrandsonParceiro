@@ -20,7 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.parceiro.Api.RetrofitClientGrandson;
-import com.example.parceiro.Model.ListaParceiro;
+import com.example.parceiro.Model.ListaCliente;
 import com.example.parceiro.R;
 import com.example.parceiro.Services.RetrofitServiceGrandson;
 import com.example.parceiro.Utils.AdapterListVewHomeCliente;
@@ -35,14 +35,15 @@ import retrofit2.Response;
 public class HomeParceiroFragment extends Fragment {
 
     ListView listView;
-    List<ListaParceiro> lListaParceiro = new ArrayList<>();
-    List<ListaParceiro> paceirosFiltrados = new ArrayList<>();
+    List<ListaCliente> lListaCliente = new ArrayList<>();
+    List<ListaCliente> paceirosFiltrados = new ArrayList<>();
     //int imagens[] = {};
 
     TextView textView, nomeCabecalho;
     SearchView searchParceiro;
 
     private String auth;
+    private String nome;
 
 
 
@@ -55,11 +56,12 @@ public class HomeParceiroFragment extends Fragment {
 
         SharedPreferences pref = getActivity().getSharedPreferences("preferencias", Context.MODE_PRIVATE);
         auth = pref.getString("token","");
+        nome = pref.getString("nome","");
 
         //getActivity().onBackPressed();
 
         Log.i("Auth :", auth);
-        listarParceiros();
+        listarCliente();
         //Assosinado entradas da tela
         listView =(ListView) view.findViewById(R.id.listViewParceiro);
         textView = (TextView) view.findViewById(R.id.textInfo);
@@ -67,7 +69,7 @@ public class HomeParceiroFragment extends Fragment {
         nomeCabecalho = (TextView) view.findViewById(R.id.nomeCabecalho);
 
         //String nome = getActivity().getIntent().getStringExtra("nome");
-        nomeCabecalho.setText("Nome");
+        nomeCabecalho.setText(nome);
 
 
 
@@ -76,9 +78,10 @@ public class HomeParceiroFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Toast.makeText(view.getContext(), "Posição: "+ lListaParceiro.get(position).getId(), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(view.getContext(), PerfilCliente.class);
-                //intent.putExtra("idParceiro",lListaParceiro.get(position).getId());
+                Toast.makeText(view.getContext(), "Posição: "+ lListaCliente.get(position).getIdServico(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(view.getContext(), SolicitacaoServico.class);
+                intent.putExtra("idServico", lListaCliente.get(position).getIdServico());
+                intent.putExtra("idCliente", lListaCliente.get(position).getIdCliente());
                 startActivity(intent);
             }
         });
@@ -99,8 +102,8 @@ public class HomeParceiroFragment extends Fragment {
     }
 
     // Metodo para Preencher ListView
-    private ArrayList<ListaParceiro> preencherList() {
-        ArrayList<ListaParceiro> list = new ArrayList<ListaParceiro>();
+    private ArrayList<ListaCliente> preencherList() {
+        ArrayList<ListaCliente> list = new ArrayList<ListaCliente>();
        /* ListaParceiro p = new ListaParceiro();
         ListaParceiro p1 = new ListaParceiro();
         ListaParceiro p2 = new ListaParceiro();
@@ -121,7 +124,7 @@ public class HomeParceiroFragment extends Fragment {
 
     public void searchContato(String name){
         paceirosFiltrados.clear();;
-        for( ListaParceiro c: lListaParceiro){
+        for( ListaCliente c: lListaCliente){
             if(c.getNome().toLowerCase().contains(name.toLowerCase())){
                 paceirosFiltrados.add(c);
             }
@@ -129,30 +132,30 @@ public class HomeParceiroFragment extends Fragment {
         }
     }
 
-    private void listarParceiros(){
+    private void listarCliente(){
 
         //Instanciando a interface
         RetrofitServiceGrandson restService = RetrofitClientGrandson.getService();
         //Passando os dados para consulta
-        Call<List<ListaParceiro>> call = restService.listarParceiros("Bearer "+auth);
+        Call<List<ListaCliente>> call = restService.listarCliente("Bearer "+auth);
 
-        call.enqueue(new Callback<List<ListaParceiro>>() {
+        call.enqueue(new Callback<List<ListaCliente>>() {
             @Override
-            public void onResponse(Call<List<ListaParceiro>> call, Response<List<ListaParceiro>> response) {
+            public void onResponse(Call<List<ListaCliente>> call, Response<List<ListaCliente>> response) {
 
                 if(response.isSuccessful()){
-                    lListaParceiro.addAll(response.body());
-                    //Log.i("Response", lListaParceiro.get(0).getNota());
+                    lListaCliente.addAll(response.body());
+                   // Log.i("Response", lListaCliente.get(0).toString());
 
 
                     // Verificando se lista esta vazia
-                    if (lListaParceiro.isEmpty()){
+                    if (lListaCliente.isEmpty()){
                         Log.i("Empty", "Lista vazia");
                         textView.setVisibility(View.VISIBLE);
                         listView.setVisibility(View.INVISIBLE);
                         AdapterListVewHomeCliente adapter = new AdapterListVewHomeCliente(getContext(),null);
                     }else {
-                        paceirosFiltrados.addAll(lListaParceiro);
+                        paceirosFiltrados.addAll(lListaCliente);
                         listView.setVisibility(View.VISIBLE);
                         // Chamando Adaptador para preenchimento do list View
                         AdapterListVewHomeCliente adapter = new AdapterListVewHomeCliente(getContext(),paceirosFiltrados);
@@ -164,15 +167,15 @@ public class HomeParceiroFragment extends Fragment {
 
 
                 }else {
-                    Toast.makeText(getContext(), "Usuário ou Senha Inválido", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Erro", Toast.LENGTH_SHORT).show();
                     Log.i("Erro:  ",response.message());
 
                 }
             }
 
             @Override
-            public void onFailure(Call<List<ListaParceiro>> call, Throwable t) {
-                Toast.makeText(getContext(), "Erro", Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<List<ListaCliente>> call, Throwable t) {
+                Toast.makeText(getContext(), "Falha", Toast.LENGTH_SHORT).show();
                 Log.i("Falha:  ",t.getMessage());
 
 
@@ -186,7 +189,7 @@ public class HomeParceiroFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home_cliente,container,false);
+        View view = inflater.inflate(R.layout.fragment_home_parceiro,container,false);
         // Inflate the layout for this fragment
         return view;
     }

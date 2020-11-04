@@ -113,6 +113,7 @@ public class LoginGrandson extends AppCompatActivity {
                     SharedPreferences prefs = getSharedPreferences("preferencias", Context.MODE_PRIVATE);
                     SharedPreferences.Editor ed = prefs.edit();
                     ed.putString("token",auth.getToken());
+                    ed.putString("nome",auth.getNome());
                     ed.apply();
                     Intent intent = new Intent(LoginGrandson.this, HomeParceiro.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);

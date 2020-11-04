@@ -24,9 +24,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.parceiro.Api.RetrofitClientGrandson;
-import com.example.parceiro.Model.Cliente;
 import com.example.parceiro.Model.Comentario;
 import com.example.parceiro.Model.Foto;
+import com.example.parceiro.Model.Parceiro;
 import com.example.parceiro.R;
 import com.example.parceiro.Services.RetrofitServiceGrandson;
 import com.example.parceiro.Utils.AdapterListViewComentario;
@@ -48,6 +48,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -74,7 +75,7 @@ public class PerfilParceiroFragment extends Fragment {
     private Bitmap imgbtmap;
 
     private String auth;
-    private Cliente cliente;
+    private Parceiro parceiro;
 
     private File file;
 
@@ -249,6 +250,7 @@ public class PerfilParceiroFragment extends Fragment {
             imagenUri = data.getData();
 
             bt_salvar_foto.setVisibility(View.VISIBLE);
+            bt_salvar_foto.setEnabled(true);
 
             //File file = data.get
             try {
@@ -297,14 +299,14 @@ public class PerfilParceiroFragment extends Fragment {
         //RequestBody bodyId = RequestBody.create(MediaType.parse("path"), String.valueOf(id));
 
         //Passando os dados para consulta
-        Call<Foto> call = restService.alterarFotoCliente("Bearer "+ auth,body);
+        Call<Foto> call = restService.alterarFotoParceiro("Bearer "+ auth,body);
 
-        Gson gson = new Gson();
-        String json = gson.toJson(body);
+      //  Gson gson = new Gson();
+       // String json = gson.toJson(body);
 
-        Log.i("Json",json);
+        /*Log.i("Json",json);
         Log.i("GEt Name",file.getName());
-        Log.i("type",getContext().getContentResolver().getType(imagenUri));
+        Log.i("type",getContext().getContentResolver().getType(imagenUri));*/
 
         call.enqueue(new Callback<Foto>() {
             @Override
@@ -313,6 +315,14 @@ public class PerfilParceiroFragment extends Fragment {
                     Toast.makeText(getContext(), "Foto Alterada com sucesso", Toast.LENGTH_SHORT).show();
                 }else {
                     Toast.makeText(getContext(), "Erro" + response.code(), Toast.LENGTH_SHORT).show();
+                    Log.i("Erro", response.message());
+                    ResponseBody responseBody = response.errorBody();
+                    try {
+                        Log.i("Erro", responseBody.string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
                 }
             }
 
@@ -350,7 +360,7 @@ public class PerfilParceiroFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_perfil_cliente, container, false);
+        return inflater.inflate(R.layout.fragment_perfil_parceiro, container, false);
     }
     // Metodo para preenchimento dos dados de perfil
     private void getPerfil(){
@@ -358,28 +368,30 @@ public class PerfilParceiroFragment extends Fragment {
         //Instanciando a interface
         RetrofitServiceGrandson restService = RetrofitClientGrandson.getService();
         //Passando os dados para consulta
-        Call<Cliente> call = restService.getPerfilCliente("Bearer "+auth);
-       call.enqueue(new Callback<Cliente>() {
+        Call<Parceiro> call = restService.getPerfilParceiro("Bearer "+auth);
+       call.enqueue(new Callback<Parceiro>() {
            @SuppressLint("ResourceAsColor")
            @Override
-           public void onResponse(Call<Cliente> call, Response<Cliente> response) {
+           public void onResponse(Call<Parceiro> call, Response<Parceiro> response) {
 
                if(response.isSuccessful()){
-                   cliente = response.body();
-                   String[] nome = cliente.getNome().split(" ");
+                   parceiro = response.body();
+                   String[] nome = parceiro.getNome().split(" ");
                    nomeCliente.setText(nome[0]);
-                   txtNotaPerf.setText(cliente.getNota()+",0");
+                   txtNotaPerf.setText(parceiro.getNota()+",0");
 
-                   textInputNome.getEditText().setText(cliente.getNome());
+                   textInputNome.getEditText().setText(parceiro.getNome());
                    //textInputNome.getEditText().setTextColor(R.color.black);
-                   textInputMail.getEditText().setText(cliente.getEmail());
-                   textInputTelefone.getEditText().setText(cliente.getTelefone());
-                   textInputCep.getEditText().setText(String.valueOf(cliente.getCep()));
-                   textLogradouro.getEditText().setText(cliente.getEnderco());
-                   textInputNumero.getEditText().setText(String.valueOf(cliente.getNumero()));
-                   textInputComplemento.getEditText().setText(cliente.getComplemento());
+                   textInputMail.getEditText().setText(parceiro.getEmail());
+                   textInputTelefone.getEditText().setText(parceiro.getTelefone());
+                   textInputCep.getEditText().setText(String.valueOf(parceiro.getEndereco().getCep()));
+                   textLogradouro.getEditText().setText(parceiro.getEndereco().getEndereco());
+                   textInputBairro.getEditText().setText(parceiro.getEndereco().getCidade());
+                   textInputEstado.getEditText().setText(parceiro.getEndereco().getEstado());
+                   textInputNumero.getEditText().setText(String.valueOf(parceiro.getEndereco().getNumero()));
+                   textInputComplemento.getEditText().setText(parceiro.getEndereco().getComplemento());
 
-                   editTextCpf.getEditText().setText(cliente.getCpf());
+                   editTextCpf.getEditText().setText(parceiro.getCpf());
 
                    getFoto();
                    //editTextNomeCartao.getEditText().setText(cliente.get);
@@ -390,7 +402,7 @@ public class PerfilParceiroFragment extends Fragment {
            }
 
            @Override
-           public void onFailure(Call<Cliente> call, Throwable t) {
+           public void onFailure(Call<Parceiro> call, Throwable t) {
 
                Log.i("Erro Servidor",t.getMessage());
 
@@ -415,11 +427,14 @@ public class PerfilParceiroFragment extends Fragment {
                 if(response.isSuccessful()){
 
                     Foto foto = response.body();
-                    //Decondificando imagem recebida do JSON
-                    byte[]  stringDecodificada = Base64.decode(foto.getData(), Base64.DEFAULT);
-                    imgbtmap = BitmapFactory.decodeByteArray(stringDecodificada, 0, stringDecodificada.length);
+                    if(foto.getData() != null){
+                        //Decondificando imagem recebida do JSON
+                        byte[]  stringDecodificada = Base64.decode(foto.getData(), Base64.DEFAULT);
+                        imgbtmap = BitmapFactory.decodeByteArray(stringDecodificada, 0, stringDecodificada.length);
 
-                    imgPerf.setImageBitmap(imgbtmap);
+                        imgPerf.setImageBitmap(imgbtmap);
+                    }
+
                 }else {
                     Toast.makeText(getContext(), "Foto não cadastrada", Toast.LENGTH_SHORT).show();
                     Log.i("Erro:  ",response.message());

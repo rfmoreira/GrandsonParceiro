@@ -3,16 +3,16 @@ package com.example.parceiro.Services;
 import com.example.parceiro.Model.FormEditarSenha;
 import com.example.parceiro.Model.Auth;
 import com.example.parceiro.Model.FormCadastrarServico;
-import com.example.parceiro.Model.CartaoCredito;
-import com.example.parceiro.Model.Cliente;
+import com.example.parceiro.Model.DadosBancarios;
 import com.example.parceiro.Model.FormCadastroParceiro;
 import com.example.parceiro.Model.FormEditarCartao;
 import com.example.parceiro.Model.Foto;
-import com.example.parceiro.Model.ListaParceiro;
+import com.example.parceiro.Model.ListaCliente;
 import com.example.parceiro.Model.FormLogin;
 import com.example.parceiro.Model.Parceiro;
 import com.example.parceiro.Model.Resposta;
-import com.example.parceiro.Model.ServicosAgendados;
+import com.example.parceiro.Model.Servico;
+import com.example.parceiro.Model.ServicosAceitos;
 
 import java.util.List;
 
@@ -31,38 +31,42 @@ public interface RetrofitServiceGrandson {
 
     //************** METODOS GETs *******************//
 
+    //OK
+    @GET("parceiro/home")
+    Call<List<ListaCliente>> listarCliente(@Header("Authorization") String auth);
 
-    @GET("cliente/home")
-    Call<List<ListaParceiro>> listarParceiros(@Header("Authorization") String auth);
-
-    @GET("cliente/perfil/parceiro/{id}")
-    Call<Parceiro> detalharParceiro(@Header("Authorization") String auth, @Path("id") int id);
+    //OK
+    @GET("parceiro/servico/detalhar/{id}")
+    Call<Servico> detalharSolicitacao(@Header("Authorization") String auth, @Path("id") int idServico);
 
     @GET("cliente/perfil/carteira")
-    Call<CartaoCredito> getCarteira(@Header("Authorization") String auth);
+    Call<DadosBancarios> getCarteira(@Header("Authorization") String auth);
 
-    @GET("foto/cliente/{id}")
+    //OK
+    @GET("foto/parceiro/{id}")
     Call<Foto> getFoto(@Header("Authorization") String auth);
 
-    @GET("cliente/perfil")
-    Call<Cliente> getPerfilCliente(@Header("Authorization") String auth);
+    //OK
+    @GET("parceiro/perfil")
+    Call<Parceiro> getPerfilParceiro(@Header("Authorization") String auth);
 
-   @GET("cliente/servico/agendados")
-   Call<List<ServicosAgendados>> getServicosAgendados(@Header("Authorization") String auth);
+   @GET("parceiro/servico/agendados")
+   Call<List<ServicosAceitos>> getServicosAceitos(@Header("Authorization") String auth);
 
 
 
     //************* METODOS POSTs ******************//
 
-
+    //OK
     @POST("parceiro/cadastrar/")
-    Call<Parceiro> cadastrarParceiro(@Body FormCadastroParceiro parceiro);
-
+    Call<Resposta> cadastrarParceiro(@Body FormCadastroParceiro parceiro);
+    //OK
     @POST("auth/parceiro")
     Call<Auth> loginCliente(@Body FormLogin formLogin);
 
-    @POST("cliente/servico/cadastrar")
-    Call<ServicosAgendados> cadastrarServico(@Header("Authorization") String auth, @Body FormCadastrarServico formCadastrarServico);
+    /*@POST("cliente/servico/cadastrar")
+    Call<ServicosAceitos> cadastrarServico(@Header("Authorization") String auth, @Body FormCadastrarServico formCadastrarServico);
+    */
 
     @Multipart
     @POST("foto/parceiro/{id}")
@@ -72,13 +76,16 @@ public interface RetrofitServiceGrandson {
     //************* METODOS PUTs ******************//
 
 
-    @PUT("cliente/alterar/senha")
+    @PUT("parceiro/alterar/senha")
     Call<Resposta> alterarSenha(@Header("Authorization") String auth, @Body FormEditarSenha formEditarSenha);
 
     @PUT("cliente/carteira")
-    Call<CartaoCredito> alterarCartao(@Header("Authorization") String auth, @Body FormEditarCartao formEditarCartao);
+    Call<DadosBancarios> alterarCartao(@Header("Authorization") String auth, @Body FormEditarCartao formEditarCartao);
 
     @Multipart
-    @PUT("foto/cliente/{id}")
-    Call<Foto> alterarFotoCliente(@Header("Authorization") String auth, @Part MultipartBody.Part file);
+    @PUT("foto/parceiro")
+    Call<Foto> alterarFotoParceiro(@Header("Authorization") String auth, @Part MultipartBody.Part file);
+
+    @PUT("parceiro/servico/aceitar/{idservico}")
+    Call<Resposta> aceitarServico(@Header("Authorization") String auth,@Path("idservico") int id);
 }
