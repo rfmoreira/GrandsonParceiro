@@ -165,8 +165,11 @@ public class SolicitacaoServico extends AppCompatActivity {
                     int i = hora.length();
                     txtHora.setText(hora.substring(0,i-3));
                     String valor = String.valueOf(servico.getValor());
-                    txtValor.setText("R$ "+valor.replace(".",",")+"0");
-                    txtHorasServico.setText(String.valueOf(servico.getQuantidadeHoras())+":00");
+                    txtValor.setText("R$ "+valor.replace(".",","));
+
+                    String qtdHoras = String.valueOf(servico.getQuantidadeHoras()).replace(".",":");
+                    txtHorasServico.setText(qtdHoras+"0");
+                    //txtHorasServico.setText(String.valueOf(servico.getQuantidadeHoras())+":00");
                     String cep = MetodosCadastro.addMask(String.valueOf(servico.getEndereco().getCep()),"##.###-###");
                     txtCep.setText(cep);
                     txtEndereco.setText(servico.getEndereco().getEndereco());
@@ -213,7 +216,9 @@ public class SolicitacaoServico extends AppCompatActivity {
                 if(response.isSuccessful()){
                     Toast.makeText(SolicitacaoServico.this, resposta.getMensagem(), Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(SolicitacaoServico.this, DetalharServicoAceito.class);
+                    intent.putExtra("idServico", idServico);
                     startActivity(intent);
+                    finish();
                 }else {
                     Toast.makeText(SolicitacaoServico.this, "Erro", Toast.LENGTH_SHORT).show();
                     ResponseBody responseBody = response.errorBody();

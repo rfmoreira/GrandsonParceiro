@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -53,7 +54,6 @@ public class HomeParceiroFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
 
-
         SharedPreferences pref = getActivity().getSharedPreferences("preferencias", Context.MODE_PRIVATE);
         auth = pref.getString("token","");
         nome = pref.getString("nome","");
@@ -71,6 +71,7 @@ public class HomeParceiroFragment extends Fragment {
         //String nome = getActivity().getIntent().getStringExtra("nome");
         nomeCabecalho.setText(nome);
 
+        searchParceiro.setFocusable(false);
 
 
 
@@ -104,21 +105,6 @@ public class HomeParceiroFragment extends Fragment {
     // Metodo para Preencher ListView
     private ArrayList<ListaCliente> preencherList() {
         ArrayList<ListaCliente> list = new ArrayList<ListaCliente>();
-       /* ListaParceiro p = new ListaParceiro();
-        ListaParceiro p1 = new ListaParceiro();
-        ListaParceiro p2 = new ListaParceiro();
-        ListaParceiro p3 = new ListaParceiro();
-        ListaParceiro p4 = new ListaParceiro();
-        p.setNome("Rafael");
-        list.add(p);
-        p1.setNome("Luan");
-        list.add(p1);
-        p2.setNome("Lucas");
-        list.add(p2);
-        p3.setNome("Alessandro");
-        list.add(p3);
-        p4.setNome("Alex");
-        list.add(p4);*/
         return list;
     }
 
@@ -153,7 +139,7 @@ public class HomeParceiroFragment extends Fragment {
                         Log.i("Empty", "Lista vazia");
                         textView.setVisibility(View.VISIBLE);
                         listView.setVisibility(View.INVISIBLE);
-                        AdapterListVewHomeCliente adapter = new AdapterListVewHomeCliente(getContext(),null);
+                       // AdapterListVewHomeCliente adapter = new AdapterListVewHomeCliente(getContext(),null);
                     }else {
                         paceirosFiltrados.addAll(lListaCliente);
                         listView.setVisibility(View.VISIBLE);
@@ -191,6 +177,7 @@ public class HomeParceiroFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home_parceiro,container,false);
         // Inflate the layout for this fragment
+
         return view;
     }
 

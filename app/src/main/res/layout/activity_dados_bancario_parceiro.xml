@@ -80,7 +80,7 @@
                         android:layout_marginStart="15dp"
                         android:layout_marginEnd="15dp"
                         android:gravity="center_horizontal|center_vertical"
-                        android:text="Informe uma conta para receber a gratificação dos seus serviços"
+                        android:text="Informe uma conta para receber os pagamentos dos seus serviços"
                         android:textAlignment="center"
                         android:textColor="@android:color/background_dark"
                         android:textSize="20sp" />

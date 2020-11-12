@@ -313,6 +313,8 @@ public class PerfilParceiroFragment extends Fragment {
             public void onResponse(Call<Foto> call, Response<Foto> response) {
                 if(response.isSuccessful()){
                     Toast.makeText(getContext(), "Foto Alterada com sucesso", Toast.LENGTH_SHORT).show();
+                    bt_salvar_foto.setVisibility(View.INVISIBLE);
+                    bt_salvar_foto.setEnabled(false);
                 }else {
                     Toast.makeText(getContext(), "Erro" + response.code(), Toast.LENGTH_SHORT).show();
                     Log.i("Erro", response.message());
@@ -337,7 +339,7 @@ public class PerfilParceiroFragment extends Fragment {
     // Metodo para Preencher ListView
     private ArrayList<Comentario> preencherList() {
         ArrayList<Comentario> list = new ArrayList<Comentario>();
-        Comentario c = new Comentario(1,"Lucas Francelino","Ótima pessoa, gosteis muito da comanhia","0");
+        /*Comentario c = new Comentario(1,"Lucas Francelino","Ótima pessoa, gosteis muito da comanhia","0");
         list.add(c);
         c = new Comentario(2
                 ,"Rafael Moreira"
@@ -352,7 +354,7 @@ public class PerfilParceiroFragment extends Fragment {
         c = new Comentario(4
                 ,"Ferdinando Garcia"
                 ,"Ótima pessoa, gosteis muito da comanhia"
-                ,"0");
+                ,"0");*/
         return list;
     }
 

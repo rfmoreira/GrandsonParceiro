@@ -1,5 +1,8 @@
 package com.example.parceiro.Services;
 
+import com.example.parceiro.Model.Bancos;
+import com.example.parceiro.Model.Cliente;
+import com.example.parceiro.Model.FormAvaliacao;
 import com.example.parceiro.Model.FormEditarSenha;
 import com.example.parceiro.Model.Auth;
 import com.example.parceiro.Model.FormCadastrarServico;
@@ -17,6 +20,7 @@ import com.example.parceiro.Model.ServicosAceitos;
 import java.util.List;
 
 import okhttp3.MultipartBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -39,19 +43,29 @@ public interface RetrofitServiceGrandson {
     @GET("parceiro/servico/detalhar/{id}")
     Call<Servico> detalharSolicitacao(@Header("Authorization") String auth, @Path("id") int idServico);
 
+    // TODO Fazer Carteira Parceiro
     @GET("cliente/perfil/carteira")
     Call<DadosBancarios> getCarteira(@Header("Authorization") String auth);
 
     //OK
-    @GET("foto/parceiro/{id}")
+    @GET("foto/parceiro")
     Call<Foto> getFoto(@Header("Authorization") String auth);
 
     //OK
     @GET("parceiro/perfil")
     Call<Parceiro> getPerfilParceiro(@Header("Authorization") String auth);
 
+    @GET("parceiro/servico/concluidos")
+    Call<List<ListaCliente>> getServicosConcluidos(@Header("Authorization") String auth);
+
+    @GET("parceiro/perfil/cliente/{id}")
+    Call<Cliente> getPerfilCliente(@Header("Authorization") String auth,@Path("id") int id);
+
    @GET("parceiro/servico/agendados")
    Call<List<ServicosAceitos>> getServicosAceitos(@Header("Authorization") String auth);
+
+   @GET("parceiro/bancos")
+   Call<List<Bancos>> getBancos();
 
 
 
@@ -86,6 +100,13 @@ public interface RetrofitServiceGrandson {
     @PUT("foto/parceiro")
     Call<Foto> alterarFotoParceiro(@Header("Authorization") String auth, @Part MultipartBody.Part file);
 
+    @PUT("parceiro/servico/avaliar/{id}")
+    Call<ResponseBody> avaliarCliente(@Header("Authorization") String auth, @Path("id") int id , @Body FormAvaliacao formAvaliacao);
+
+
     @PUT("parceiro/servico/aceitar/{idservico}")
     Call<Resposta> aceitarServico(@Header("Authorization") String auth,@Path("idservico") int id);
+
+    @PUT("parceiro/servico/cancelar/{id}")
+    Call<Resposta> cancelarServico(@Header("Authorization") String auth, @Path("id") int id);
 }

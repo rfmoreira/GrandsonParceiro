@@ -60,7 +60,6 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="10dp"
                         android:gravity="center_vertical"
-                        android:text="Fulano"
                         android:textColor="@android:color/black"
                         android:textSize="25sp"
                         android:textStyle="bold" />
@@ -70,7 +69,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="3,5"
                         android:textSize="25dp" />
 
                     <ImageView
@@ -152,12 +150,12 @@
                             android:orientation="horizontal">
 
                             <TextView
+                                android:id="@+id/txtData"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginEnd="10dp"
                                 android:gravity="center_vertical"
-                                android:text="15/10/2020"
                                 android:textColor="@android:color/black"
                                 android:textSize="21sp"
                                 android:textStyle="bold" />
@@ -171,12 +169,12 @@
                             android:orientation="horizontal">
 
                             <TextView
+                                android:id="@+id/txtHora"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginEnd="10dp"
                                 android:gravity="center_horizontal"
-                                android:text="12:30"
                                 android:textColor="@android:color/black"
                                 android:textSize="21sp"
                                 android:textStyle="bold" />
@@ -244,12 +242,12 @@
                             android:orientation="horizontal">
 
                             <TextView
+                                android:id="@+id/txtValor"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginEnd="10dp"
                                 android:gravity="center_vertical"
-                                android:text="R$ 50,00"
                                 android:textColor="@android:color/black"
                                 android:textSize="21sp"
                                 android:textStyle="bold" />
@@ -263,12 +261,13 @@
                             android:orientation="horizontal">
 
                             <TextView
+                                android:id="@+id/txtHorasServico"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginEnd="10dp"
                                 android:gravity="center_horizontal"
-                                android:text="2:00"
+
                                 android:textColor="@android:color/black"
                                 android:textSize="21sp"
                                 android:textStyle="bold" />
@@ -306,11 +305,11 @@
                             android:textSize="20sp" />
 
                         <TextView
+                            android:id="@+id/txtCep"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
                             android:layout_marginEnd="10dp"
-                            android:text="72.236.406"
                             android:textColor="@android:color/black"
                             android:textSize="21sp"
                             android:textStyle="bold" />
@@ -337,11 +336,11 @@
                                     android:textSize="20sp" />
 
                                 <TextView
+                                    android:id="@+id/txtEndereco"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="start"
                                     android:layout_marginEnd="10dp"
-                                    android:text="Qnp 34 Conjunto F"
                                     android:textColor="@android:color/black"
                                     android:textSize="21sp"
                                     android:textStyle="bold" />
@@ -364,11 +363,11 @@
                                     android:textSize="20sp" />
 
                                 <TextView
+                                    android:id="@+id/txtNumero"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="start"
                                     android:layout_marginEnd="10dp"
-                                    android:text="37"
                                     android:textColor="@android:color/black"
                                     android:textSize="21sp"
                                     android:textStyle="bold" />
@@ -389,11 +388,11 @@
                             android:textSize="20sp" />
 
                         <TextView
+                            android:id="@+id/txtComplemento"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
                             android:layout_marginBottom="20dp"
-                            android:text="Casa"
                             android:textColor="@android:color/black"
                             android:textSize="21sp"
                             android:textStyle="bold" />
@@ -418,7 +417,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/bt_aceitar"
+            android:id="@+id/bt_cancelar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

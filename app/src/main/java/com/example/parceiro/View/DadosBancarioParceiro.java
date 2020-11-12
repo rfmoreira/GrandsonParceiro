@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.parceiro.Api.RetrofitClientCEP;
 import com.example.parceiro.Api.RetrofitClientGrandson;
+import com.example.parceiro.Model.Bancos;
 import com.example.parceiro.Model.Cep;
 import com.example.parceiro.Model.FormCadastroParceiro;
 import com.example.parceiro.Model.Foto;
@@ -58,6 +59,9 @@ public class DadosBancarioParceiro extends AppCompatActivity {
     private File file;
     private Resposta resposta;
 
+    List<String> str = new ArrayList<>();
+    List<Bancos> bancos = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,17 +79,12 @@ public class DadosBancarioParceiro extends AppCompatActivity {
 
         radioGroup = (RadioGroup) findViewById(R.id.radioGrupTipo);
         spinnerBancos = (Spinner) findViewById(R.id.spinnerBancos);
-        List<String> bancos = new ArrayList<>();
-        bancos.add("01 - Banco do Brasil S.A");
+
+       /* bancos.add("01 - Banco do Brasil S.A");
         bancos.add("237 - Bradesco S.A");
-        bancos.add("260 - Nu Pagamentos S.A (Nubank)");
+        bancos.add("260 - Nu Pagamentos S.A (Nubank)");*/
 
-
-
-        ArrayAdapter<String> adapter;
-        adapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,bancos);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerBancos.setAdapter(adapter);
+        getListaBancos();
 
         // MASCARA CPF
         SimpleMaskFormatter simpleMaskCpf = new SimpleMaskFormatter("NNN.NNN.NNN-NN");
@@ -122,7 +121,7 @@ public class DadosBancarioParceiro extends AppCompatActivity {
         radioCheck = radioButton.getText().toString();
     }
 
-    public void onClickSalvar(View v){
+        public void onClickSalvar(View v){
 
         String nomeFavorecido = MetodosCadastro.unMask(textInputNomeFavorecido.getEditText().getText().toString());
         String cpf = MetodosCadastro.unMask(textInputCpf.getEditText().getText().toString());
@@ -166,7 +165,7 @@ public class DadosBancarioParceiro extends AppCompatActivity {
         }*/
         }
 
-
+        //Metodo para Salvar Parceiro POST
         public void salavarParceiro(){
 
             //instanciando a interface
@@ -185,6 +184,11 @@ public class DadosBancarioParceiro extends AppCompatActivity {
                         }else {
                             salvarFoto(resposta.getObject());
                         }
+
+                        Intent intent = new Intent(DadosBancarioParceiro.this,LoginGrandson.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+
                         Toast.makeText(DadosBancarioParceiro.this, "Cadastrado com Sucesso", Toast.LENGTH_SHORT).show();
 
                     }else {
@@ -200,7 +204,7 @@ public class DadosBancarioParceiro extends AppCompatActivity {
 
         }
 
-    // Post Multipart para Salvar Imagem
+        // Post Multipart para Salvar Imagem
         private void salvarFoto(int id){
             file = FileUtil.getFile(this,imagenUri);
             final RequestBody requestBody = RequestBody.create(MediaType.parse(getContentResolver().getType(imagenUri)),file);
@@ -237,6 +241,48 @@ public class DadosBancarioParceiro extends AppCompatActivity {
                 public void onFailure(Call<Foto> call, Throwable t) {
                     //Toast.makeText(DadosBancarioCliente.this, "Erro 2"+ t.getMessage(), Toast.LENGTH_SHORT).show();
                     Log.i("Falha",t.getMessage());
+                }
+            });
+
+
+        }
+
+
+        //Metodo para buscar lista de bancos
+        private void getListaBancos(){
+
+            //instanciando a interface
+            RetrofitServiceGrandson restService = RetrofitClientGrandson.getService();
+
+            //passando os dados para consulta
+            Call<List<Bancos>> call = restService.getBancos();
+
+            call.enqueue(new Callback<List<Bancos>>() {
+                @Override
+                public void onResponse(Call<List<Bancos>> call, Response<List<Bancos>> response) {
+                    if (response.isSuccessful()){
+
+                        bancos = response.body();
+
+                        for(int i = 0; i < bancos.size(); i++){
+                            str.add(bancos.get(i).getCodigo()+" - "+bancos.get(i).getBanco());
+                        }
+
+                        if(!str.isEmpty()){
+                            ArrayAdapter<String> adapter;
+                            adapter = new ArrayAdapter<>(DadosBancarioParceiro.this,android.R.layout.simple_spinner_item,str);
+                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            spinnerBancos.setAdapter(adapter);
+                        }
+
+                    }else {
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<Bancos>> call, Throwable t) {
+
                 }
             });
 

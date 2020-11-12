@@ -31,7 +31,7 @@ public class Servico {
     private String nota;
     @SerializedName("quantidadeHoras")
     @Expose
-    private Integer quantidadeHoras;
+    private double quantidadeHoras;
     @SerializedName("telefone")
     @Expose
     private String telefone;
@@ -103,11 +103,11 @@ public class Servico {
         this.nota = nota;
     }
 
-    public Integer getQuantidadeHoras() {
+    public double getQuantidadeHoras() {
         return quantidadeHoras;
     }
 
-    public void setQuantidadeHoras(Integer quantidadeHoras) {
+    public void setQuantidadeHoras(double quantidadeHoras) {
         this.quantidadeHoras = quantidadeHoras;
     }
 
@@ -125,5 +125,23 @@ public class Servico {
 
     public void setValor(double valor) {
         this.valor = valor;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Servico{" +
+                "dia='" + dia + '\'' +
+                ", endereco=" + endereco +
+                ", foto=" + foto +
+                ", horario='" + horario + '\'' +
+                ", idCliente=" + idCliente +
+                ", idServico=" + idServico +
+                ", nome='" + nome + '\'' +
+                ", nota='" + nota + '\'' +
+                ", quantidadeHoras=" + quantidadeHoras +
+                ", telefone='" + telefone + '\'' +
+                ", valor=" + valor +
+                '}';
     }
 }
