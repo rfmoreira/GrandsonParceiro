@@ -52,7 +52,14 @@ public class AdapterListVewHomeCliente extends ArrayAdapter<ListaCliente> {
         }
 
         nomeParceiro.setText(p.getNome());
-        nota.setText(p.getNota());
+
+        String v = p.getNota();
+        if (v.length() == 1){
+            nota.setText(p.getNota()+",0");
+        }else {
+            nota.setText(p.getNota());
+        }
+        //nota.setText(p.getNota());
 
         return view;
     }

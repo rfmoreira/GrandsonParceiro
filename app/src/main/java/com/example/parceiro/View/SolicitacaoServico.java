@@ -25,6 +25,7 @@ import com.example.parceiro.Services.RetrofitServiceGrandson;
 import com.example.parceiro.Utils.MetodosCadastro;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -41,7 +42,6 @@ public class SolicitacaoServico extends AppCompatActivity {
             txtValor,txtHorasServico,
             txtCep,txtEndereco,
             txtNumero,txtComplemento;
-    private ListView listViewComentarios;
     private ArrayList<Comentario> listaCometarios;
     private Button bt_aceitar,bt_recusar,bt_ver_perf;
     private int idServico;
@@ -72,7 +72,6 @@ public class SolicitacaoServico extends AppCompatActivity {
         txtNumero = (TextView) findViewById(R.id.txtNumero);
         txtComplemento = (TextView) findViewById(R.id.txtComplemento);
 
-        listViewComentarios =(ListView) findViewById(R.id.listViewComentarios);
         bt_aceitar =(Button) findViewById(R.id.bt_aceitar);
         bt_recusar =(Button) findViewById(R.id.bt_recusar);
         bt_ver_perf =(Button) findViewById(R.id.bt_ver_perf);
@@ -80,18 +79,6 @@ public class SolicitacaoServico extends AppCompatActivity {
 
         getServico();
 
-        //Preenchendo Lista de comentarios
-        /*listaCometarios = preencherList();
-
-        // Verificando se lista esta vazia
-        if (listaCometarios.isEmpty()){
-            AdapterListViewComentario adapter = new AdapterListViewComentario(this,null);
-        }else {
-            // Chamando Adaptador para preenchimento do list View
-            AdapterListViewComentario adapter = new AdapterListViewComentario(this,listaCometarios);
-            // Setenado adptador no list view
-            listViewComentarios.setAdapter(adapter);
-        }*/
 
         bt_aceitar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,34 +102,13 @@ public class SolicitacaoServico extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
     }
 
     // Metodo para Preencher ListView
     private ArrayList<Comentario> preencherList() {
         ArrayList<Comentario> list = new ArrayList<Comentario>();
-        /*Comentario c = new Comentario(1,"Lucas Francelino","Ótima pessoa, gosteis muito da comanhia","0");
-
-        for(int i = 0; i < 4 ;i++){
-           list.add(c);
-           c = new Comentario(2
-                   ,"Rafael Moreira"
-                   ,"Ótima pessoa, gosteis muito da comanhia"
-                   ,"0");
-           list.add(c);
-           c = new Comentario(3
-                   ,"Luan Amor"
-                   ,"Ótimo profissional muito atencioso e dedicado, confiavel e tem um otimo papo pena que não é muito bom e jogos peder todos, kkkk"
-                   ,"0");
-           list.add(c);
-           c = new Comentario(4
-                   ,"Ferdinando Garcia"
-                   ,"Ótima pessoa, gosteis muito da comanhia"
-                   ,"0");
-       }*/
         return list;
     }
-
 
     public void getServico(){
 
@@ -158,14 +124,21 @@ public class SolicitacaoServico extends AppCompatActivity {
 
                 if(response.isSuccessful()){
                     nomeCliente.setText(servico.getNome());
-                    txtNotaPerf.setText(servico.getNota());
+
+                    String v = servico.getNota();
+                    if (v.length() == 1){
+                        txtNotaPerf.setText(servico.getNota()+",0");
+                    }else {
+                        txtNotaPerf.setText(servico.getNota());
+                    }
                     String[] data = servico.getDia().split("-");
                     txtData.setText(data[2]+"/"+data[1]+"/"+data[0]);
                     String hora = servico.getHorario();
                     int i = hora.length();
                     txtHora.setText(hora.substring(0,i-3));
-                    String valor = String.valueOf(servico.getValor());
-                    txtValor.setText("R$ "+valor.replace(".",","));
+
+                    DecimalFormat df = new DecimalFormat("0.00");
+                    txtValor.setText("R$ "+String.valueOf(df.format(Double.valueOf(servico.getValor()))));
 
                     String qtdHoras = String.valueOf(servico.getQuantidadeHoras()).replace(".",":");
                     txtHorasServico.setText(qtdHoras+"0");

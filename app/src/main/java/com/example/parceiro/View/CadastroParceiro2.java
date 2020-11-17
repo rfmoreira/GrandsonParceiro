@@ -57,7 +57,7 @@ public class CadastroParceiro2 extends AppCompatActivity {
                         consultarCEP(cep);
                     }else {
                         textInputCep.getEditText().setError("CEP Invalido");
-                        textInputCep.requestFocus();
+                        //textInputCep.requestFocus();
                     }
                 }
             }

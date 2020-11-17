@@ -9,12 +9,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.parceiro.Model.FormCadastroParceiro;
 import com.example.parceiro.R;
+import com.example.parceiro.Utils.FileUtil;
 import com.example.parceiro.Utils.MetodosCadastro;
 import com.github.rtoshiro.util.format.SimpleMaskFormatter;
 import com.github.rtoshiro.util.format.text.MaskTextWatcher;
@@ -22,6 +24,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputLayout;
 
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -150,33 +153,38 @@ public class CadastroParceiro extends AppCompatActivity {
 
         if(requestCode == 1 && resultCode == RESULT_OK && data!=null && data.getData()!=null){
             imagenUri = data.getData();
-            try {
-                //Capturando a Imagem
-                InputStream inputStream = getContentResolver().openInputStream(imagenUri);
-                //Convertendo para Bitmap
-                imgBtmp = BitmapFactory.decodeStream(inputStream);
-                //Setando imagem
-                imgPerfil.setImageBitmap(imgBtmp);
+            File file = FileUtil.getFile(this,imagenUri);
+            long size = file.length();
+            if(size <= 2097152){
+                try {
+                    //Capturando a Imagem
+                    InputStream inputStream = getContentResolver().openInputStream(imagenUri);
+                    //Convertendo para Bitmap
+                    imgBtmp = BitmapFactory.decodeStream(inputStream);
+                    //Setando imagem
+                    imgPerfil.setImageBitmap(imgBtmp);
 
-                //Convertendo Imagem para Byte
-                /*ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                imgBtmp.compress(Bitmap.CompressFormat.JPEG,80,stream);
-                arrayBytes = stream.toByteArray();*/
-                //Convertendo de Byte para Bitmap
-                //imgBtmp = BitmapFactory.decodeByteArray(arrayBytes,0,arrayBytes.length);
-                //Codificando para enviar via JSON
-                //String imagemCodificada = Base64.encodeToString(arrayBytes, Base64.DEFAULT);
-                //Decondificando imagem recebida do JSON
-                //byte[]  stringDecodificada = Base64.decode(imagemCodificada, Base64.DEFAULT);
-                //imgBtmp = BitmapFactory.decodeByteArray(stringDecodificada, 0, stringDecodificada.length);
-                //imgPerfil.setImageBitmap(imgBtmp);
+                    //Convertendo Imagem para Byte
+                    /*ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    imgBtmp.compress(Bitmap.CompressFormat.JPEG,80,stream);
+                    arrayBytes = stream.toByteArray();*/
+                    //Convertendo de Byte para Bitmap
+                    //imgBtmp = BitmapFactory.decodeByteArray(arrayBytes,0,arrayBytes.length);
+                    //Codificando para enviar via JSON
+                    //String imagemCodificada = Base64.encodeToString(arrayBytes, Base64.DEFAULT);
+                    //Decondificando imagem recebida do JSON
+                    //byte[]  stringDecodificada = Base64.decode(imagemCodificada, Base64.DEFAULT);
+                    //imgBtmp = BitmapFactory.decodeByteArray(stringDecodificada, 0, stringDecodificada.length);
+                    //imgPerfil.setImageBitmap(imgBtmp);
 
-            }catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+                }catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }else {
+                Toast.makeText(this, "Imagem Muito Grande !", Toast.LENGTH_SHORT).show();
             }
-
         }
     }
 

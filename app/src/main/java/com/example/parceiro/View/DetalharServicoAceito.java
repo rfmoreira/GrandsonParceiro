@@ -21,6 +21,8 @@ import com.example.parceiro.R;
 import com.example.parceiro.Services.RetrofitServiceGrandson;
 import com.example.parceiro.Utils.MetodosCadastro;
 
+import java.text.DecimalFormat;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -89,15 +91,24 @@ public class DetalharServicoAceito extends FragmentActivity {
                     Log.i("Servico", servico.toString());
 
                     nomeCliente.setText(servico.getNome());
-                    txtNotaPerf.setText(servico.getNota());
+                    String v = servico.getNota();
+                    if (v.length() == 1){
+                        txtNotaPerf.setText(servico.getNota()+",0");
+                    }else {
+                        txtNotaPerf.setText(servico.getNota());
+                    }
 
                     String[] data = servico.getDia().split("-");
                     txtData.setText(data[2]+"/"+data[1]+"/"+data[0]);
                     String hora = servico.getHorario();
                     int i = hora.length();
                     txtHora.setText(hora.substring(0,i-3));
-                    String valor = String.valueOf(servico.getValor());
-                    txtValor.setText("R$ "+valor.replace(".",","));
+
+                    //String valor = String.valueOf(servico.getValor());
+                    //txtValor.setText("R$ "+valor.replace(".",","));
+
+                    DecimalFormat df = new DecimalFormat("0.00");
+                    txtValor.setText("R$ "+String.valueOf(df.format(Double.valueOf(servico.getValor()))));
 
                     String qtdHoras = String.valueOf(servico.getQuantidadeHoras()).replace(".",":");
                     txtHorasServico.setText(qtdHoras+"0");

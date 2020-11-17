@@ -48,7 +48,7 @@
                         android:layout_weight="0"
                         android:text="Olá, "
                         android:textAlignment="viewEnd"
-                        android:textColor="@color/Azul_Grandson"
+                        android:textColor="@color/Laranja_Grandson"
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
@@ -60,7 +60,7 @@
                         android:layout_marginEnd="5dp"
                         android:layout_weight="0"
                         android:textAlignment="viewStart"
-                        android:textColor="@color/Azul_Grandson"
+                        android:textColor="@color/Laranja_Grandson"
                         android:textSize="24sp"
                         android:textStyle="bold" />
                 </LinearLayout>

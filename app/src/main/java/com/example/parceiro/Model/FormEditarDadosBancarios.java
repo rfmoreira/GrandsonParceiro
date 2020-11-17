@@ -1,44 +1,25 @@
 package com.example.parceiro.Model;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Date;
+public class FormEditarDadosBancarios {
 
-public class DadosBancarios {
-    @SerializedName("nomeBeneficiario")
-    private String nome;
     @SerializedName("agencia")
+    @Expose
     private Integer agencia;
     @SerializedName("banco")
+    @Expose
     private String banco;
     @SerializedName("conta")
+    @Expose
     private Integer conta;
-    @SerializedName("id")
-    private Integer id;
+    @SerializedName("nomeBeneficiario")
+    @Expose
+    private String nome;
     @SerializedName("tipo")
+    @Expose
     private String tipo;
-    @SerializedName("valor")
-    private double valor;
-
-    public DadosBancarios() {
-    }
-
-    public DadosBancarios(Integer agencia, String banco, Integer conta, Integer id, String tipo) {
-        this.agencia = agencia;
-        this.banco = banco;
-        this.conta = conta;
-        this.id = id;
-        this.tipo = tipo;
-    }
-
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
 
     public Integer getAgencia() {
         return agencia;
@@ -64,12 +45,12 @@ public class DadosBancarios {
         this.conta = conta;
     }
 
-    public Integer getId() {
-        return id;
+    public String getNome() {
+        return nome;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public String getTipo() {
@@ -80,11 +61,4 @@ public class DadosBancarios {
         this.tipo = tipo;
     }
 
-    public double getValor() {
-        return valor;
-    }
-
-    public void setValor(double valor) {
-        this.valor = valor;
-    }
 }

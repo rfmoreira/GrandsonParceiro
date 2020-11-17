@@ -73,7 +73,13 @@ public class PerfilCliente extends AppCompatActivity {
                     Cliente parceiro = response.body();
 
                     nomeCliente.setText(parceiro.getNome());
-                    txtNotaPerf.setText(parceiro.getNota());
+                    String v = parceiro.getNota();
+                    if (v.length() == 1){
+                        txtNotaPerf.setText(parceiro.getNota()+",0");
+                    }else {
+                        txtNotaPerf.setText(parceiro.getNota());
+                    }
+
                     txtViewQtdCompanhia.setText(String.valueOf(parceiro.getQuantidadeServico()));
                     String[] date1 = parceiro.getDataInicio().split("T");
                     String[] date2 = date1[0].split("-");

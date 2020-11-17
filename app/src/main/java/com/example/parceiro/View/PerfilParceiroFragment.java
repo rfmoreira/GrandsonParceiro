@@ -25,12 +25,14 @@ import android.widget.Toast;
 
 import com.example.parceiro.Api.RetrofitClientGrandson;
 import com.example.parceiro.Model.Comentario;
+import com.example.parceiro.Model.FormEditarParceiro;
 import com.example.parceiro.Model.Foto;
 import com.example.parceiro.Model.Parceiro;
 import com.example.parceiro.R;
 import com.example.parceiro.Services.RetrofitServiceGrandson;
 import com.example.parceiro.Utils.AdapterListViewComentario;
 import com.example.parceiro.Utils.FileUtil;
+import com.example.parceiro.Utils.MetodosCadastro;
 import com.github.rtoshiro.util.format.SimpleMaskFormatter;
 import com.github.rtoshiro.util.format.text.MaskTextWatcher;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -43,6 +45,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
@@ -60,7 +63,7 @@ public class PerfilParceiroFragment extends Fragment {
 
     private Button bt_edit_credCard,bt_edit_senha,bt_salvar_cadastro,bt_edit_cadastro,bt_sair,bt_salvar_foto;
     private ListView listViewComentarios;
-    private ArrayList<Comentario> listaCometarios;
+    private ArrayList<Comentario> listaCometarios = new ArrayList<>();
     private FloatingActionButton bt_edit_image;
     private Uri imagenUri;
     private CircleImageView imgPerf;
@@ -94,7 +97,6 @@ public class PerfilParceiroFragment extends Fragment {
         txtNotaPerf = (TextView) view.findViewById(R.id.txtNotaPerf);
         nomeCliente = (TextView) view.findViewById(R.id.nomeCliente);
 
-
         //DADOS PESSOAIS
         textInputNome = (TextInputLayout) view.findViewById(R.id.textInputNome);
         textInputMail = (TextInputLayout) view.findViewById(R.id.textInputMail);
@@ -116,26 +118,6 @@ public class PerfilParceiroFragment extends Fragment {
         bt_edit_cadastro = (Button) view.findViewById(R.id.bt_edit_cadastro);
         bt_sair = (Button) view.findViewById(R.id.bt_sair);
         bt_salvar_foto = (Button) view.findViewById(R.id.bt_salvar_foto);
-
-        //DADOS PAGAMENTO
-        /*editTextCpf = (TextInputLayout) view.findViewById(R.id.editTextCpf);
-        editTextNomeCartao = (TextInputLayout) view.findViewById(R.id.editTextNomeCartao);
-        editTextNumCartao = (TextInputLayout) view.findViewById(R.id.editTextNumCartao);
-        editTextCodSegCartao = (TextInputLayout) view.findViewById(R.id.editTextCodSegCartao);
-        editTextValidade = (TextInputLayout) view.findViewById(R.id.editTextValidade);*/
-
-        //Preenchendo Lista de comentarios
-        listaCometarios = preencherList();
-
-        // Verificando se lista esta vazia
-        if (listaCometarios.isEmpty()){
-            AdapterListViewComentario adapter = new AdapterListViewComentario(this.getActivity(),null);
-        }else {
-            // Chamando Adaptador para preenchimento do list View
-            AdapterListViewComentario adapter = new AdapterListViewComentario(this.getContext(),listaCometarios);
-            // Setenado adptador no list view
-            listViewComentarios.setAdapter(adapter);
-        }
 
         //Botao de editar imagem de Perfil
         bt_edit_image.setOnClickListener(new View.OnClickListener() {
@@ -232,6 +214,39 @@ public class PerfilParceiroFragment extends Fragment {
 
     }
 
+    //Metodo para desabilitar campos e salvar alteracoes
+    private void desabilitarCampos(){
+
+        String nome = textInputNome.getEditText().getText().toString();
+        String telefone = MetodosCadastro.unMask(textInputTelefone.getEditText().getText().toString());
+        int cep = Integer.parseInt(MetodosCadastro.unMask(textInputCep.getEditText().getText().toString()));
+        String logradouro = textLogradouro.getEditText().getText().toString();
+        int numero = Integer.parseInt(textInputNumero.getEditText().getText().toString());
+        String complemento = textInputComplemento.getEditText().getText().toString();
+        String bairro = textInputBairro.getEditText().getText().toString();
+        String estado = textInputEstado.getEditText().getText().toString();
+
+        FormEditarParceiro formEditarParceiro = new FormEditarParceiro(cep,complemento,logradouro,nome,numero,telefone);
+
+        salavarCadastro(formEditarParceiro);
+        //DADOS PESSOAIS
+        textInputNome.getEditText().setFocusableInTouchMode(false);
+        editTextCpf.setEnabled(false);
+        textInputMail.setEnabled(false);
+        textInputTelefone.getEditText().setFocusableInTouchMode(false);
+
+        //ENDEREÇO
+        textInputCep.getEditText().setFocusableInTouchMode(false);
+        textLogradouro.getEditText().setFocusableInTouchMode(false);
+        textInputNumero.getEditText().setFocusableInTouchMode(false);
+        textInputComplemento.getEditText().setFocusableInTouchMode(false);
+        textInputBairro.getEditText().setFocusableInTouchMode(false);
+        textInputEstado.getEditText().setFocusableInTouchMode(false);
+
+        bt_edit_cadastro.setEnabled(true);
+        bt_salvar_cadastro.setEnabled(false);
+    }
+
     //Editar imagem de Perfil
     private void procurarImagem() {
         Intent intent = new Intent(Intent.ACTION_PICK);
@@ -239,7 +254,6 @@ public class PerfilParceiroFragment extends Fragment {
         startActivityForResult(Intent.createChooser(intent,"Selecione Imagem"), 1);
 
     }
-
 
     // Setando imagem de Perfil
     @Override
@@ -290,71 +304,51 @@ public class PerfilParceiroFragment extends Fragment {
 
     public void salvarFoto(){
         file = FileUtil.getFile(getContext(),imagenUri);
-        final RequestBody requestBody = RequestBody.create(MediaType.parse(getContext().getContentResolver().getType(imagenUri)),file);
-        final MultipartBody.Part body = MultipartBody.Part.createFormData("foto",file.getName(),requestBody);
+        long size = file.length();
 
-        //Instanciando a interface
-        RetrofitServiceGrandson restService = RetrofitClientGrandson.getService();
+        if(size <= 2097152){
+            final RequestBody requestBody = RequestBody.create(MediaType.parse(getContext().getContentResolver().getType(imagenUri)),file);
+            final MultipartBody.Part body = MultipartBody.Part.createFormData("foto",file.getName(),requestBody);
 
-        //RequestBody bodyId = RequestBody.create(MediaType.parse("path"), String.valueOf(id));
+            //Instanciando a interface
+            RetrofitServiceGrandson restService = RetrofitClientGrandson.getService();
 
-        //Passando os dados para consulta
-        Call<Foto> call = restService.alterarFotoParceiro("Bearer "+ auth,body);
+            //Passando os dados para consulta
+            Call<Foto> call = restService.alterarFotoParceiro("Bearer "+ auth,body);
 
-      //  Gson gson = new Gson();
-       // String json = gson.toJson(body);
+            call.enqueue(new Callback<Foto>() {
+                @Override
+                public void onResponse(Call<Foto> call, Response<Foto> response) {
+                    if(response.isSuccessful()){
+                        Toast.makeText(getContext(), "Foto Alterada com sucesso", Toast.LENGTH_SHORT).show();
+                        bt_salvar_foto.setVisibility(View.INVISIBLE);
+                        bt_salvar_foto.setEnabled(false);
+                    }else {
+                        Toast.makeText(getContext(), "Erro" + response.code(), Toast.LENGTH_SHORT).show();
+                        Log.i("Erro", response.message());
+                        ResponseBody responseBody = response.errorBody();
+                        try {
+                            Log.i("Erro", responseBody.string());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
 
-        /*Log.i("Json",json);
-        Log.i("GEt Name",file.getName());
-        Log.i("type",getContext().getContentResolver().getType(imagenUri));*/
-
-        call.enqueue(new Callback<Foto>() {
-            @Override
-            public void onResponse(Call<Foto> call, Response<Foto> response) {
-                if(response.isSuccessful()){
-                    Toast.makeText(getContext(), "Foto Alterada com sucesso", Toast.LENGTH_SHORT).show();
-                    bt_salvar_foto.setVisibility(View.INVISIBLE);
-                    bt_salvar_foto.setEnabled(false);
-                }else {
-                    Toast.makeText(getContext(), "Erro" + response.code(), Toast.LENGTH_SHORT).show();
-                    Log.i("Erro", response.message());
-                    ResponseBody responseBody = response.errorBody();
-                    try {
-                        Log.i("Erro", responseBody.string());
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
-
                 }
-            }
 
-            @Override
-            public void onFailure(Call<Foto> call, Throwable t) {
-                Toast.makeText(getContext(), "Erro Interno", Toast.LENGTH_SHORT).show();
-            }
-        });
-
+                @Override
+                public void onFailure(Call<Foto> call, Throwable t) {
+                    Toast.makeText(getContext(), "Erro Interno", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }else {
+            Toast.makeText(getContext(), "Imagem Muito Grande !", Toast.LENGTH_SHORT).show();
+        }
     }
 
     // Metodo para Preencher ListView
     private ArrayList<Comentario> preencherList() {
         ArrayList<Comentario> list = new ArrayList<Comentario>();
-        /*Comentario c = new Comentario(1,"Lucas Francelino","Ótima pessoa, gosteis muito da comanhia","0");
-        list.add(c);
-        c = new Comentario(2
-                ,"Rafael Moreira"
-                ,"Ótima pessoa, gosteis muito da comanhia"
-                ,"0");
-        list.add(c);
-        c = new Comentario(3
-                ,"Luan Amor"
-                ,"Ótimo profissional muito atencioso e dedicado, confiavel e tem um otimo papo pena que não é muito bom e jogos peder todos, kkkk"
-                ,"0");
-        list.add(c);
-        c = new Comentario(4
-                ,"Ferdinando Garcia"
-                ,"Ótima pessoa, gosteis muito da comanhia"
-                ,"0");*/
         return list;
     }
 
@@ -380,7 +374,13 @@ public class PerfilParceiroFragment extends Fragment {
                    parceiro = response.body();
                    String[] nome = parceiro.getNome().split(" ");
                    nomeCliente.setText(nome[0]);
-                   txtNotaPerf.setText(parceiro.getNota()+",0");
+
+                   String v = parceiro.getNota();
+                   if (v.length() == 1){
+                       txtNotaPerf.setText(parceiro.getNota()+",0");
+                   }else {
+                       txtNotaPerf.setText(parceiro.getNota());
+                   }
 
                    textInputNome.getEditText().setText(parceiro.getNome());
                    //textInputNome.getEditText().setTextColor(R.color.black);
@@ -394,6 +394,19 @@ public class PerfilParceiroFragment extends Fragment {
                    textInputComplemento.getEditText().setText(parceiro.getEndereco().getComplemento());
 
                    editTextCpf.getEditText().setText(parceiro.getCpf());
+
+                   //Preenchendo Lista de comentarios
+                   listaCometarios = new ArrayList<>(parceiro.getComentarios());
+
+                   // Verificando se lista esta vazia
+                   if (listaCometarios.isEmpty()){
+                     //  AdapterListViewComentario adapter = new AdapterListViewComentario(this.getActivity(),null);
+                   }else {
+                       // Chamando Adaptador para preenchimento do list View
+                       AdapterListViewComentario adapter = new AdapterListViewComentario(getContext(),listaCometarios);
+                       // Setenado adptador no list view
+                       listViewComentarios.setAdapter(adapter);
+                   }
 
                    getFoto();
                    //editTextNomeCartao.getEditText().setText(cliente.get);
@@ -452,4 +465,29 @@ public class PerfilParceiroFragment extends Fragment {
 
 
     }
+
+
+    private void salavarCadastro(FormEditarParceiro formEditarParceiro){
+        //Instanciando a interface
+        RetrofitServiceGrandson restService = RetrofitClientGrandson.getService();
+        //Passando os dados para consulta
+        Call<Parceiro> call = restService.alterarParceiro("Bearer "+auth, formEditarParceiro);
+
+        call.enqueue(new Callback<Parceiro>() {
+            @Override
+            public void onResponse(Call<Parceiro> call, Response<Parceiro> response) {
+                if(response.isSuccessful()){
+                    Toast.makeText(getContext(), "Alterado com Sucesso", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(getContext(), "Erro ao alterar", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Parceiro> call, Throwable t) {
+                Toast.makeText(getContext(), "Falha no servidor", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 }

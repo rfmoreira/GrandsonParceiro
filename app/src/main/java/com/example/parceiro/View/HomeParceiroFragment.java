@@ -119,7 +119,6 @@ public class HomeParceiroFragment extends Fragment {
     }
 
     private void listarCliente(){
-
         //Instanciando a interface
         RetrofitServiceGrandson restService = RetrofitClientGrandson.getService();
         //Passando os dados para consulta
@@ -131,9 +130,7 @@ public class HomeParceiroFragment extends Fragment {
 
                 if(response.isSuccessful()){
                     lListaCliente.addAll(response.body());
-                   // Log.i("Response", lListaCliente.get(0).toString());
-
-
+                    // Log.i("Response", lListaCliente.get(0).toString());
                     // Verificando se lista esta vazia
                     if (lListaCliente.isEmpty()){
                         Log.i("Empty", "Lista vazia");
@@ -144,40 +141,34 @@ public class HomeParceiroFragment extends Fragment {
                         paceirosFiltrados.addAll(lListaCliente);
                         listView.setVisibility(View.VISIBLE);
                         // Chamando Adaptador para preenchimento do list View
-                        AdapterListVewHomeCliente adapter = new AdapterListVewHomeCliente(getContext(),paceirosFiltrados);
-                        // Setenado adptador no list view
-                        listView.setAdapter(adapter);
-
+                        try{
+                            AdapterListVewHomeCliente adapter = new AdapterListVewHomeCliente(getContext(),paceirosFiltrados);
+                            // Setenado adptador no list view
+                            listView.setAdapter(adapter);
+                        }catch (Exception e){
+                            Log.i("Exeption",e.getMessage());
+                        }
                     }
-
-
 
                 }else {
                     Toast.makeText(getContext(), "Erro", Toast.LENGTH_SHORT).show();
                     Log.i("Erro:  ",response.message());
-
                 }
             }
-
             @Override
             public void onFailure(Call<List<ListaCliente>> call, Throwable t) {
                 Toast.makeText(getContext(), "Falha", Toast.LENGTH_SHORT).show();
                 Log.i("Falha:  ",t.getMessage());
-
-
             }
         });
 
     }
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home_parceiro,container,false);
         // Inflate the layout for this fragment
-
         return view;
     }
 

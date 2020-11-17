@@ -8,14 +8,20 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.parceiro.Api.RetrofitClientGrandson;
+import com.example.parceiro.Model.Bancos;
 import com.example.parceiro.Model.DadosBancarios;
-import com.example.parceiro.Model.FormEditarCartao;
+import com.example.parceiro.Model.FormEditarDadosBancarios;
 import com.example.parceiro.R;
 import com.example.parceiro.Services.RetrofitServiceGrandson;
 import com.example.parceiro.Utils.MetodosCadastro;
@@ -23,8 +29,9 @@ import com.github.rtoshiro.util.format.SimpleMaskFormatter;
 import com.github.rtoshiro.util.format.text.MaskTextWatcher;
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -32,15 +39,23 @@ import retrofit2.Response;
 
 public class EditarDadosBancarios extends AppCompatActivity {
 
-    private TextInputLayout editTextCpf, editTextNomeCartao
-            ,editTextNumCartao, editTextCodSegCartao
-            ,editTextValidade;
-    private Button bt_edit_cartao,bt_salvar_cartao;
+    private TextView txtValorCarteira;
+    private TextInputLayout textInputNomeFavorecido,textInputConta,textInputAgencia;
+    private RadioGroup radioGroup;
+    private RadioButton radioButton, radio_Corrente, radio_Poupanca;
+    private Spinner spinnerBancos;
+    private String radioCheck;
+    private String bancoSelected;
     private String auth;
 
+    private Button bt_edit_banco,bt_salvar_banco;
+
     private DadosBancarios dadosBancarios;
-    private FormEditarCartao formEditarCartao;
+    private FormEditarDadosBancarios formEditarDadosBancarios;
     private ProgressDialog progressDialog;
+
+    List<String> str = new ArrayList<>();
+    List<Bancos> bancos = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,121 +66,122 @@ public class EditarDadosBancarios extends AppCompatActivity {
         SharedPreferences pref = getSharedPreferences("preferencias", Context.MODE_PRIVATE);
         auth = pref.getString("token","");
 
+        txtValorCarteira = (TextView) findViewById(R.id.txtValorCarteira);
+        textInputNomeFavorecido = (TextInputLayout) findViewById(R.id.textInputNomeFavorecido);
+        textInputAgencia = (TextInputLayout) findViewById(R.id.textInputAgencia);
+        textInputConta = (TextInputLayout) findViewById(R.id.textInputConta);
 
-        //DADOS PAGAMENTO
-        editTextNomeCartao = (TextInputLayout) findViewById(R.id.editTextNomeCartao);
-        editTextNumCartao = (TextInputLayout) findViewById(R.id.editTextNumCartao);
-        editTextCodSegCartao = (TextInputLayout) findViewById(R.id.editTextCodSegCartao);
-        editTextValidade = (TextInputLayout) findViewById(R.id.editTextValidade);
+        radioGroup = (RadioGroup) findViewById(R.id.radioGrupTipo);
+        radio_Corrente = (RadioButton) findViewById(R.id.radio_Corrente);
+        radio_Poupanca = (RadioButton) findViewById(R.id.radio_Poupanca);
 
-        //BOTOES
-        bt_edit_cartao = (Button) findViewById(R.id.bt_edit_cartao);
-        bt_salvar_cartao = (Button) findViewById(R.id.bt_salvar_cartao);
+        spinnerBancos = (Spinner) findViewById(R.id.spinnerBancos);
 
+        spinnerBancos.setEnabled(false);
 
-
-        // MASCARA CARTAO CREDITO
-       /* SimpleMaskFormatter simpleMaskCreditCard= new SimpleMaskFormatter("NNNN NNNN NNNN NNNN");
-        MaskTextWatcher maskCreditCard = new MaskTextWatcher(editTextNumCartao.getEditText(), simpleMaskCreditCard);
-        editTextNumCartao.getEditText().addTextChangedListener(maskCreditCard);*/
-
-        // MASCARA DATA VALIDADE
-        SimpleMaskFormatter simpleMaskValidate= new SimpleMaskFormatter("NN/NNNN");
-        MaskTextWatcher maskValidate = new MaskTextWatcher(editTextValidade.getEditText(), simpleMaskValidate);
-        editTextValidade.getEditText().addTextChangedListener(maskValidate);
+        bt_edit_banco = (Button) findViewById(R.id.bt_edit_banco);
+        bt_salvar_banco = (Button) findViewById(R.id.bt_salvar_banco);
 
         getCarteira();
 
+        // MASCARA AGENCIA
+        SimpleMaskFormatter simpleMaskAgencia= new SimpleMaskFormatter("NNNN-NN");
+        MaskTextWatcher maskAgencia = new MaskTextWatcher(textInputAgencia.getEditText(), simpleMaskAgencia);
+        textInputAgencia.getEditText().addTextChangedListener(maskAgencia);
 
-        bt_edit_cartao.setOnClickListener(new View.OnClickListener() {
+        // MASCARA CONTA
+        SimpleMaskFormatter simpleMaskConta= new SimpleMaskFormatter("NNNNNNNN-N");
+        MaskTextWatcher maskConta = new MaskTextWatcher(textInputConta.getEditText(), simpleMaskConta);
+        textInputConta.getEditText().addTextChangedListener(maskConta);
+
+        spinnerBancos.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View view) {
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                bancoSelected = adapterView.getItemAtPosition(i).toString();
+            }
 
-                SimpleMaskFormatter simpleMaskCreditCard= new SimpleMaskFormatter("NNNN NNNN NNNN NNNN");
-                MaskTextWatcher maskCreditCard = new MaskTextWatcher(editTextNumCartao.getEditText(), simpleMaskCreditCard);
-                editTextNumCartao.getEditText().addTextChangedListener(maskCreditCard);
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
 
-                editTextNomeCartao.getEditText().setFocusableInTouchMode(true);
-                editTextNomeCartao.getEditText().requestFocus();
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(editTextNomeCartao.getEditText(), InputMethodManager.SHOW_IMPLICIT);
-
-                editTextNumCartao.getEditText().setFocusableInTouchMode(true);
-                editTextNumCartao.getEditText().setText(dadosBancarios.getAgencia());
-                editTextCodSegCartao.getEditText().setFocusableInTouchMode(true);
-                editTextValidade.getEditText().setFocusableInTouchMode(true);
-                editTextCodSegCartao.getEditText().setText("");
-                editTextNumCartao.getEditText().setText("");
-
-                bt_edit_cartao.setEnabled(false);
-                bt_salvar_cartao.setEnabled(true);
             }
         });
 
-        bt_salvar_cartao.setOnClickListener(new View.OnClickListener() {
+
+        bt_edit_banco.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                textInputNomeFavorecido.getEditText().setFocusableInTouchMode(true);
+                textInputNomeFavorecido.getEditText().requestFocus();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(textInputNomeFavorecido.getEditText(), InputMethodManager.SHOW_IMPLICIT);
+                textInputAgencia.getEditText().setFocusableInTouchMode(true);
+                textInputConta.getEditText().setFocusableInTouchMode(true);
+                spinnerBancos.setEnabled(true);
+                radio_Corrente.setEnabled(true);
+                radio_Poupanca.setEnabled(true);
+
+                getListaBancos();
+
+                bt_edit_banco.setEnabled(false);
+                bt_salvar_banco.setEnabled(true);
+            }
+        });
+
+        bt_salvar_banco.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 validarCampos();
             }
         });
 
-
-
     }
 
+    public void checkRadioButton(View v){
+        radioButton =  findViewById(radioGroup.getCheckedRadioButtonId());
+        radioCheck = radioButton.getText().toString();
+    }
+
+    //Validar alteracoes dados bancarios
     private void validarCampos() {
 
-        formEditarCartao = new FormEditarCartao();
+        formEditarDadosBancarios = new FormEditarDadosBancarios();
 
-        if (MetodosCadastro.isCampoVazio(editTextNomeCartao.getEditText().getText().toString())) {
-            editTextNomeCartao.getEditText().setError("Campo  Vazio !");
-        } else {
-            formEditarCartao.setNomeCartao(editTextNomeCartao.getEditText().getText().toString());
+        String banco = bancoSelected;
+        String tipo = radioCheck;
 
-            if (MetodosCadastro.isCampoVazio(MetodosCadastro.unMask(editTextNumCartao.getEditText().getText().toString()))) {
-                editTextNumCartao.getEditText().setError("Campo  Vazio !");
-            } else {
-                formEditarCartao.setNumeroCartao(MetodosCadastro.unMask(editTextNumCartao.getEditText().getText().toString()));
 
-                if (MetodosCadastro.isCampoVazio(editTextValidade.getEditText().getText().toString())) {
-                    editTextValidade.getEditText().setError("Campo  Vazio !");
+            if(MetodosCadastro.isCampoVazio(textInputNomeFavorecido.getEditText().getText().toString())) {
+                textInputNomeFavorecido.getEditText().setError("Campo  Vazio !");
+            }else {
+                formEditarDadosBancarios.setNome(textInputNomeFavorecido.getEditText().getText().toString());
+                if (MetodosCadastro.isCampoVazio(MetodosCadastro.unMask(textInputAgencia.getEditText().getText().toString()))){
+                    textInputAgencia.getEditText().setError("Campo  Vazio !");
                 } else {
-                    if (isDate(editTextValidade.getEditText().getText().toString())) {
-                        editTextValidade.getEditText().setError("Data Inválida");
+                    formEditarDadosBancarios.setAgencia(Integer.parseInt(MetodosCadastro.unMask(textInputAgencia.getEditText().getText().toString())));
+                    if (MetodosCadastro.isCampoVazio(MetodosCadastro.unMask(textInputConta.getEditText().getText().toString()))) {
+                        textInputConta.getEditText().setError("Campo  Vazio !");
                     } else {
-                        if (editTextValidade.getEditText().getText().toString().length() < 3) {
-                            editTextValidade.getEditText().setError("Data Inválida");
+                        formEditarDadosBancarios.setConta(Integer.parseInt(MetodosCadastro.unMask(textInputConta.getEditText().getText().toString())));
+                        if (MetodosCadastro.isCampoVazio(banco)) {
+                            Toast.makeText(this, "Selecione um Banco.", Toast.LENGTH_SHORT).show();
                         } else {
-                            formEditarCartao.setDataValidade(formatDate(editTextValidade.getEditText().getText().toString()));
-
-                            if (MetodosCadastro.isCampoVazio(editTextCodSegCartao.getEditText().getText().toString())) {
-                                editTextCodSegCartao.getEditText().setError("Campo  Vazio !");
-                            } else {
-
-                                formEditarCartao.setCvv(Integer.parseInt(MetodosCadastro.unMask(editTextCodSegCartao.getEditText().getText().toString())));
-
-                                //Inicializando progress bar
-                                progressDialog = new ProgressDialog(EditarDadosBancarios.this);
-                                // Apresentando
-                                progressDialog.show();
-                                progressDialog.setContentView(R.layout.progress_dialog);
-                                progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-                                getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                salvarAlteracao();
-                            }
+                            formEditarDadosBancarios.setBanco(banco);
+                            formEditarDadosBancarios.setTipo(tipo);
+                            salvarAlteracao();
                         }
                     }
                 }
             }
-        }
+
     }
 
+    //Salvar alteracao dados bancarios
     private void salvarAlteracao() {
         //Instanciando a interface
         RetrofitServiceGrandson restService = RetrofitClientGrandson.getService();
         //Passando os dados para consulta
-        Call<DadosBancarios> call = restService.alterarCartao("Bearer "+auth,formEditarCartao);
+        Call<DadosBancarios> call = restService.alterarCartao("Bearer "+auth, formEditarDadosBancarios);
 
         call.enqueue(new Callback<DadosBancarios>() {
             @Override
@@ -173,25 +189,25 @@ public class EditarDadosBancarios extends AppCompatActivity {
                 if(response.isSuccessful()){
                     dadosBancarios = response.body();
 
-                    Toast.makeText(EditarDadosBancarios.this, "Cartão Alterado com Sucesso", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EditarDadosBancarios.this, "Dados Bancários alterados com Sucesso", Toast.LENGTH_SHORT).show();
                     finish();
-                    progressDialog.dismiss();
+                    //progressDialog.dismiss();
                 }else {
-                    Toast.makeText(EditarDadosBancarios.this, "Erro ao alterar Cartão", Toast.LENGTH_SHORT).show();
-                    progressDialog.dismiss();
+                    Toast.makeText(EditarDadosBancarios.this, "Erro ao alterar Dados", Toast.LENGTH_SHORT).show();
+                    //progressDialog.dismiss();
                 }
             }
 
             @Override
             public void onFailure(Call<DadosBancarios> call, Throwable t) {
                 Toast.makeText(EditarDadosBancarios.this, "Erro Servidor", Toast.LENGTH_SHORT).show();
-                progressDialog.dismiss();
+                //progressDialog.dismiss();
             }
         });
 
     }
 
-
+    //Recuperar dados Bancarios
     private void getCarteira(){
 
         // Instanciando cliente WS
@@ -206,14 +222,27 @@ public class EditarDadosBancarios extends AppCompatActivity {
                 if(response.isSuccessful()){
                     dadosBancarios = response.body();
 
-                    /*editTextNomeCartao.getEditText().setText(dadosBancarios.getNomeNoCartao());
-                    String t = dadosBancarios.getNumeroDoCartao().substring
-                            (dadosBancarios.getNumeroDoCartao().length() - 4);
+                    DecimalFormat df = new DecimalFormat("0.00");
+                    txtValorCarteira.setText(String.valueOf(df.format(Double.valueOf(dadosBancarios.getValor()))));
 
-                    editTextNumCartao.getEditText().setText("**** **** **** "+ t);
-                    String[] validade = dadosBancarios.getDataDeVencimento().split("-");
-                    editTextValidade.getEditText().setText(validade[1]+validade[0]);
-                    editTextCodSegCartao.getEditText().setText("***");*/
+                    textInputNomeFavorecido.getEditText().setText(dadosBancarios.getNome());
+                   // textInputCpf.getEditText().setText(dadosBancarios.getCPF);
+                    textInputAgencia.getEditText().setText(String.valueOf(dadosBancarios.getAgencia()));
+                    textInputConta.getEditText().setText(String.valueOf(dadosBancarios.getConta()));
+
+                    str.add(dadosBancarios.getBanco());
+                    if(!str.isEmpty()) {
+                        ArrayAdapter<String> adapter;
+                        adapter = new ArrayAdapter<>(EditarDadosBancarios.this, android.R.layout.simple_spinner_item, str);
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        spinnerBancos.setAdapter(adapter);
+                        spinnerBancos.setSelection(0);
+                    }
+                   if(dadosBancarios.getTipo().equals("Corrente")){
+                       radio_Corrente.setChecked(true);
+                    }else {
+                       radio_Poupanca.setChecked(true);
+                    }
 
                 }else {
 
@@ -227,46 +256,44 @@ public class EditarDadosBancarios extends AppCompatActivity {
 
     }
 
+    //Metodo para buscar lista de bancos
+    private void getListaBancos(){
 
-    public String formatDate(String data){
+        //instanciando a interface
+        RetrofitServiceGrandson restService = RetrofitClientGrandson.getService();
 
-        String[] dados = data.split("/");
-        if(data.isEmpty()){
-            return "";
-        }else {
+        //passando os dados para consulta
+        Call<List<Bancos>> call = restService.getBancos();
 
-            data = dados[1]+"-"+ dados[0] +"-01";
-            return  data;
-        }
+        call.enqueue(new Callback<List<Bancos>>() {
+            @Override
+            public void onResponse(Call<List<Bancos>> call, Response<List<Bancos>> response) {
+                if (response.isSuccessful()){
 
-    }
+                    bancos = response.body();
 
-    public boolean isDate(String data){
+                    for(int i = 0; i < bancos.size(); i++){
+                        str.add(bancos.get(i).getCodigo()+" - "+bancos.get(i).getBanco());
+                    }
 
-        if(data.length() > 3) {
-            String[] dados = data.split("/");
-            SimpleDateFormat formatterAno = new SimpleDateFormat("yyyy");
-            SimpleDateFormat formatterMes = new SimpleDateFormat("MM");
-            Date date = new Date(System.currentTimeMillis());
-            int ano = Integer.parseInt(formatterAno.format(date));
-            int mes = Integer.parseInt(formatterMes.format(date));
+                    if(!str.isEmpty()){
+                        ArrayAdapter<String> adapter;
+                        adapter = new ArrayAdapter<>(EditarDadosBancarios.this,android.R.layout.simple_spinner_item,str);
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        spinnerBancos.setAdapter(adapter);
+                    }
 
-            Log.i("Data", dados[1]);
+                }else {
 
-            if (Integer.parseInt(dados[0]) > 12) {
-                Log.i("Data Erro", "");
-                return true;
-            } else if (Integer.parseInt(dados[1]) < ano) {
-                Log.i("Data Erro", "");
-                return true;
-            } else if (Integer.parseInt(dados[1]) == ano && Integer.parseInt(dados[0]) <= mes) {
-                return true;
-            } else {
-                return false;
+                }
             }
-        }else {
-            return false;
-        }
+
+            @Override
+            public void onFailure(Call<List<Bancos>> call, Throwable t) {
+
+            }
+        });
+
 
     }
 

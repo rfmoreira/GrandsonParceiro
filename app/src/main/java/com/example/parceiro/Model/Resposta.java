@@ -6,6 +6,7 @@ public class Resposta {
 
     @SerializedName("mensagem")
     private String mensagem;
+
     @SerializedName("object")
     private Integer object;
 

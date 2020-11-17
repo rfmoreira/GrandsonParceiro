@@ -35,12 +35,14 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -51,7 +53,7 @@ public class DadosBancarioParceiro extends AppCompatActivity {
     private RadioGroup radioGroup;
     private RadioButton radioButton;
     private Spinner spinnerBancos;
-    private String radioCheck;
+    private String radioCheck = "Corrente";
     private String bancoSelected;
     private FormCadastroParceiro formCadastroParceiro;
 
@@ -79,10 +81,6 @@ public class DadosBancarioParceiro extends AppCompatActivity {
 
         radioGroup = (RadioGroup) findViewById(R.id.radioGrupTipo);
         spinnerBancos = (Spinner) findViewById(R.id.spinnerBancos);
-
-       /* bancos.add("01 - Banco do Brasil S.A");
-        bancos.add("237 - Bradesco S.A");
-        bancos.add("260 - Nu Pagamentos S.A (Nubank)");*/
 
         getListaBancos();
 
@@ -113,60 +111,59 @@ public class DadosBancarioParceiro extends AppCompatActivity {
             }
         });
 
-
-
     }
+
     public void checkRadioButton(View v){
         radioButton =  findViewById(radioGroup.getCheckedRadioButtonId());
         radioCheck = radioButton.getText().toString();
     }
 
-        public void onClickSalvar(View v){
+    public void onClickSalvar(View v){
 
-        String nomeFavorecido = MetodosCadastro.unMask(textInputNomeFavorecido.getEditText().getText().toString());
-        String cpf = MetodosCadastro.unMask(textInputCpf.getEditText().getText().toString());
-        int agencia = Integer.parseInt(MetodosCadastro.unMask(textInputAgencia.getEditText().getText().toString()));
-        int conta = Integer.parseInt(MetodosCadastro.unMask(textInputConta.getEditText().getText().toString()));
+        //String nomeFavorecido = textInputNomeFavorecido.getEditText().getText().toString();
+        //String cpf = MetodosCadastro.unMask(textInputCpf.getEditText().getText().toString());
+        //int agencia = Integer.parseInt(MetodosCadastro.unMask(textInputAgencia.getEditText().getText().toString()));
+        //int conta = Integer.parseInt(MetodosCadastro.unMask(textInputConta.getEditText().getText().toString()));
         String banco = bancoSelected;
         String tipo = radioCheck;
 
-        formCadastroParceiro.setNomeBeneficiario(nomeFavorecido);
-        formCadastroParceiro.setCpf(cpf);
-        formCadastroParceiro.setAgencia(agencia);
-        formCadastroParceiro.setConta(conta);
-        formCadastroParceiro.setBanco(banco);
-        formCadastroParceiro.setTipo(tipo);
-
-        salavarParceiro();
-
-
-        /*if(MetodosCadastro.isCampoVazio(cpf)){
-            editTextCpf.setError("Campo  Vazio !");
+        if(MetodosCadastro.isCampoVazio(MetodosCadastro.unMask(textInputCpf.getEditText().getText().toString()))){
+            textInputCpf.getEditText().setError("Campo  Vazio !");
+            textInputCpf.requestFocus();
         }else{
-        if(MetodosCadastro.isCPF(cpf)){
-
-            if(MetodosCadastro.isCampoVazio(agencia)){
-                editTextAgencia.setError("Campo  Vazio !");
-            }else{
-                if (MetodosCadastro.isCampoVazio(conta)){
-                    editTextConta.setError("Campo  Vazio !");
-                }else {
-                    if (MetodosCadastro.isCampoVazio(banco)){
-                        editTextBanco.setError("Campo  Vazio !");
-                    }else {
-                        Intent intent = new Intent(getApplicationContext(),Grandson.class);
-                        startActivity(intent);;
+        if(MetodosCadastro.isCPF(MetodosCadastro.unMask(textInputCpf.getEditText().getText().toString()))){
+            formCadastroParceiro.setCpf(MetodosCadastro.unMask(textInputCpf.getEditText().getText().toString()));
+            if(MetodosCadastro.isCampoVazio(textInputNomeFavorecido.getEditText().getText().toString())) {
+                textInputNomeFavorecido.getEditText().setError("Campo  Vazio !");
+            }else {
+                formCadastroParceiro.setNomeBeneficiario(textInputNomeFavorecido.getEditText().getText().toString());
+                if (MetodosCadastro.isCampoVazio(MetodosCadastro.unMask(textInputAgencia.getEditText().getText().toString()))){
+                    textInputAgencia.getEditText().setError("Campo  Vazio !");
+                } else {
+                    formCadastroParceiro.setAgencia(Integer.parseInt(MetodosCadastro.unMask(textInputAgencia.getEditText().getText().toString())));
+                    if (MetodosCadastro.isCampoVazio(MetodosCadastro.unMask(textInputConta.getEditText().getText().toString()))) {
+                        textInputConta.getEditText().setError("Campo  Vazio !");
+                    } else {
+                        formCadastroParceiro.setConta(Integer.parseInt(MetodosCadastro.unMask(textInputConta.getEditText().getText().toString())));
+                        if (MetodosCadastro.isCampoVazio(banco)) {
+                            Toast.makeText(this, "Selecione um Banco.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            formCadastroParceiro.setBanco(banco);
+                            formCadastroParceiro.setTipo(tipo);
+                            salavarParceiro();
+                        }
                     }
                 }
             }
             }else {
-                editTextCpf.setError("CPF Invalido");
+            textInputCpf.getEditText().setError("CPF Inválido");
+            textInputCpf.requestFocus();
             }
-        }*/
         }
+    }
 
-        //Metodo para Salvar Parceiro POST
-        public void salavarParceiro(){
+    //Metodo para Salvar Parceiro POST
+    public void salavarParceiro(){
 
             //instanciando a interface
             RetrofitServiceGrandson restService = RetrofitClientGrandson.getService();
@@ -184,15 +181,24 @@ public class DadosBancarioParceiro extends AppCompatActivity {
                         }else {
                             salvarFoto(resposta.getObject());
                         }
-
                         Intent intent = new Intent(DadosBancarioParceiro.this,LoginGrandson.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        finishAffinity();
                         startActivity(intent);
-
-                        Toast.makeText(DadosBancarioParceiro.this, "Cadastrado com Sucesso", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(DadosBancarioParceiro.this, resposta.getMensagem(), Toast.LENGTH_SHORT).show();
 
                     }else {
-                        Toast.makeText(DadosBancarioParceiro.this, "Erro", Toast.LENGTH_SHORT).show();
+                        ResponseBody responseBody = response.errorBody();
+                        try {
+                            Gson gson = new Gson();
+                            Resposta resposta2 = gson.fromJson(responseBody.string(),Resposta.class);
+                            Toast.makeText(DadosBancarioParceiro.this, resposta2.getMensagem(), Toast.LENGTH_SHORT).show();
+                            Log.i("Erro:  ",responseBody.string());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }catch (NullPointerException nl){
+                            nl.printStackTrace();
+                        }
                     }
                 }
 
@@ -202,10 +208,10 @@ public class DadosBancarioParceiro extends AppCompatActivity {
                 }
             });
 
-        }
+    }
 
-        // Post Multipart para Salvar Imagem
-        private void salvarFoto(int id){
+    // Post Multipart para Salvar Imagem
+    private void salvarFoto(int id){
             file = FileUtil.getFile(this,imagenUri);
             final RequestBody requestBody = RequestBody.create(MediaType.parse(getContentResolver().getType(imagenUri)),file);
             final MultipartBody.Part body = MultipartBody.Part.createFormData("foto",file.getName(),requestBody);
@@ -213,44 +219,30 @@ public class DadosBancarioParceiro extends AppCompatActivity {
             //Instanciando a interface
             RetrofitServiceGrandson restService = RetrofitClientGrandson.getService();
 
-            //RequestBody bodyId = RequestBody.create(MediaType.parse("path"), String.valueOf(id));
-
             //Passando os dados para consulta
             Call<Foto> call = restService.uploadImagem(body,id);
 
-           /* Gson gson = new Gson();
-            String json = gson.toJson(body);
-
-            Log.i("Json",json);
-            Log.i("GEt Name",call.toString());
-            Log.i("requestBody",requestBody.toString());*/
             call.enqueue(new Callback<Foto>() {
                 @Override
                 public void onResponse(Call<Foto> call, Response<Foto> response) {
                     if(response.isSuccessful()){
                         Foto foto = response.body();
                         Log.i("Sucesso", foto.getData());
-
                     }else {
                         //Toast.makeText(DadosBancarioCliente.this, "Erro"+response.message(), Toast.LENGTH_SHORT).show();
                         Log.i("Erro ",response.message());
                     }
                 }
-
                 @Override
                 public void onFailure(Call<Foto> call, Throwable t) {
                     //Toast.makeText(DadosBancarioCliente.this, "Erro 2"+ t.getMessage(), Toast.LENGTH_SHORT).show();
                     Log.i("Falha",t.getMessage());
                 }
             });
+    }
 
-
-        }
-
-
-        //Metodo para buscar lista de bancos
-        private void getListaBancos(){
-
+    //Metodo para buscar lista de bancos
+    private void getListaBancos(){
             //instanciando a interface
             RetrofitServiceGrandson restService = RetrofitClientGrandson.getService();
 
@@ -261,20 +253,16 @@ public class DadosBancarioParceiro extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<List<Bancos>> call, Response<List<Bancos>> response) {
                     if (response.isSuccessful()){
-
                         bancos = response.body();
-
                         for(int i = 0; i < bancos.size(); i++){
                             str.add(bancos.get(i).getCodigo()+" - "+bancos.get(i).getBanco());
                         }
-
                         if(!str.isEmpty()){
                             ArrayAdapter<String> adapter;
                             adapter = new ArrayAdapter<>(DadosBancarioParceiro.this,android.R.layout.simple_spinner_item,str);
                             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                             spinnerBancos.setAdapter(adapter);
                         }
-
                     }else {
 
                     }
@@ -285,10 +273,7 @@ public class DadosBancarioParceiro extends AppCompatActivity {
 
                 }
             });
-
-
         }
-
 
     }
 

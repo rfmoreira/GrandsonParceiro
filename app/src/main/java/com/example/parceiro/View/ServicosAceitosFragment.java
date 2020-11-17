@@ -67,21 +67,7 @@ public class ServicosAceitosFragment extends Fragment {
         });
     }
 
-        // Metodo para Preencher ListView
-        /*private ArrayList<ListaParceiro> preencherList() {
-            ArrayList<ListaParceiro> list = new ArrayList<ListaParceiro>();
-            ListaParceiro p = new ListaParceiro();
-            ListaParceiro p1 = new ListaParceiro();
-            ListaParceiro p2 = new ListaParceiro();
-            p.setNome("Rafael");
-            list.add(p);
-            p1.setNome("Luan");
-            list.add(p1);
-            p2.setNome("Lucas");
-            list.add(p2);
-            return list;
 
-        }*/
         private void listarServicosAgendados(){
 
             //Instanciando a interface
@@ -103,13 +89,18 @@ public class ServicosAceitosFragment extends Fragment {
                         if (lServicosAgendados.isEmpty()){
                             textInfo.setVisibility(View.VISIBLE);
                             listView.setVisibility(View.INVISIBLE);
-                            AdapterListVewServicosAgendados adapter = new AdapterListVewServicosAgendados(getActivity(),null);
+                           // AdapterListVewServicosAgendados adapter = new AdapterListVewServicosAgendados(getActivity(),null);
                         }else {
                             listView.setVisibility(View.VISIBLE);
-                            // Chamando Adaptador para preenchimento do list View
-                            AdapterListVewServicosAgendados adapter = new AdapterListVewServicosAgendados(getContext(), lServicosAgendados);
-                            // Setenado adptador no list view
-                            listView.setAdapter(adapter);
+                            try {
+                                // Chamando Adaptador para preenchimento do list View
+                                AdapterListVewServicosAgendados adapter = new AdapterListVewServicosAgendados(getContext(), lServicosAgendados);
+                                // Setenado adptador no list view
+                                listView.setAdapter(adapter);
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+
                         }
 
                     }else {

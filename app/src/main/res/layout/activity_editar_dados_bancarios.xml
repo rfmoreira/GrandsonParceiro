@@ -6,150 +6,292 @@
     android:layout_height="match_parent"
     tools:context="com.example.parceiro.View.EditarDadosBancarios">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_margin="10dp"
         android:orientation="vertical"
-        android:layout_margin="8dp">
-    <TextView
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:layout_weight="0"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_weight="0"
+                    android:text="Carteira"
+                    android:textAlignment="viewEnd"
+                    android:textColor="@color/black"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textViewNome"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="0"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/Azul_Grandson"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="22dp"
+                android:layout_weight="0"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Saldo da Semana: R$"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/background_dark"
+                    android:textSize="20sp" />
+                <TextView
+                    android:id="@+id/txtValorCarteira"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="1dp"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text=""
+                    android:textAlignment="center"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/background_dark"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/txtValor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:layout_marginStart="1dp"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="Dados Conta"
+                android:textColor="@android:color/background_dark"
+                android:textStyle="bold"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:gravity="center"
-        android:text="Dados de Pagamento"
-        android:textColor="@color/black"
-        android:textSize="22dp"
-        android:textStyle="bold" />
-
-
+        android:layout_height="match_parent"
+        android:layout_weight="0"
+        android:orientation="vertical">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editTextNomeCartao"
+        android:id="@+id/textInputNomeFavorecido"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:hintTextAppearance="@style/HintText">
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:hintTextAppearance="@style/HintText"
+        >
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="Nome do Favorecido"
+            android:maxLength="100"
+            android:inputType="text"
+            android:textSize="20dp"
             android:digits="abcdefghijklmnopqrstuvxwyzABCDEFGHIJKLMNOPQRSTUVXWYZ "
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:hint="Nome"
-            android:inputType="text"
-            android:maxLength="100"
-            android:textSize="20dp" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editTextNumCartao"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Numero do Cartão"
-        app:hintTextAppearance="@style/HintText"
-        app:placeholderText="1234 4567 8910 1112"
-        app:placeholderTextColor="?attr/colorControlNormal">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:digits="1234567890"
-            android:drawableRight="@drawable/ic_credit_card"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:inputType="numberDecimal"
-            android:maxLength="100"
-            android:textSize="20dp" />
+            />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="67dp"
+        android:orientation="vertical"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Banco"
+            android:textColor="?attr/colorControlNormal"
+            android:textSize="16sp"
+            />
+
+        <Spinner
+            android:id="@+id/spinnerBancos"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+
+    </LinearLayout>
+
+
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputAgencia"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:hintTextAppearance="@style/HintText"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Agência"
+            android:maxLength="100"
+            android:inputType="numberDecimal"
+            android:textSize="20dp"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+
+        >
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/editTextValidade"
+            android:id="@+id/textInputConta"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Data Validade"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             app:hintTextAppearance="@style/HintText"
-            app:placeholderText="MM/AAAA"
-            app:placeholderTextColor="?attr/colorControlNormal"
-
             >
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:digits="1234567890"
-                android:drawableRight="@drawable/ic_calendar"
+                android:hint="Conta"
+                android:inputType="numberDecimal"
+                android:textSize="20dp"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
-                android:inputType="numberDecimal"
-                android:maxLength="7"
-                android:textSize="20dp" />
+                />
 
         </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/editTextCodSegCartao"
+        <RadioGroup
+            android:id="@+id/radioGrupTipo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_weight="1"
-            app:hintTextAppearance="@style/HintText">
+            android:layout_weight="1.5"
+            android:layout_marginEnd="8dp"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:clickable="false">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
+            <RadioButton
+                android:id="@+id/radio_Corrente"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:digits="1234567890"
-                android:drawableRight="@drawable/ic_lock"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:hint="CVV"
-                android:inputType="numberDecimal"
-                android:maxLength="4"
-                android:textSize="20dp" />
+                android:layout_weight="1"
+                android:text="Corrente"
+                android:enabled="false"
+                android:onClick="checkRadioButton"
+                android:textSize="20sp"
+                />
 
-        </com.google.android.material.textfield.TextInputLayout>
+            <RadioButton
+                android:id="@+id/radio_Poupanca"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="checkRadioButton"
+                android:text="Poupança"
+                android:enabled="false"
+                android:textSize="20sp" />
+        </RadioGroup>
 
     </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="20dp">
+            android:foregroundGravity="center"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
 
             <Button
-                android:id="@+id/bt_edit_cartao"
-                android:layout_width="match_parent"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="3dp"
+                android:id="@+id/bt_edit_banco"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="5dp"
                 android:background="@drawable/button_white_login"
-                android:text="Editar Cartão"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:text="Editar Conta"
                 android:textAllCaps="false"
-                android:textSize="20dp"/>
+                android:textSize="20dp" />
 
             <Button
-                android:id="@+id/bt_salvar_cartao"
-                android:layout_width="match_parent"
+                android:id="@+id/bt_salvar_banco"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginBottom="8dp"
                 android:layout_weight="1"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="3dp"
                 android:background="@drawable/button_white_login"
-                android:text="Salvar Edição"
+                android:text="Salvar"
                 android:textAllCaps="false"
-                android:enabled="false"
                 android:textSize="20dp"
-                />
+                android:enabled="false"/>
+
+
         </LinearLayout>
     </LinearLayout>
+
+    </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

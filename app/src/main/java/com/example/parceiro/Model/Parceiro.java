@@ -34,6 +34,9 @@ public class Parceiro {
     @SerializedName("telefone")
     @Expose
     private String telefone;
+    @SerializedName("comentarios")
+    @Expose
+    private List<Comentario> comentarios = null;
 
     public String getCpf() {
         return cpf;
@@ -107,5 +110,11 @@ public class Parceiro {
         this.telefone = telefone;
     }
 
+    public List<Comentario> getComentarios() {
+        return comentarios;
+    }
 
+    public void setComentarios(List<Comentario> comentarios) {
+        this.comentarios = comentarios;
+    }
 }

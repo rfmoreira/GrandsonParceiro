@@ -3,12 +3,12 @@ package com.example.parceiro.Services;
 import com.example.parceiro.Model.Bancos;
 import com.example.parceiro.Model.Cliente;
 import com.example.parceiro.Model.FormAvaliacao;
+import com.example.parceiro.Model.FormEditarParceiro;
 import com.example.parceiro.Model.FormEditarSenha;
 import com.example.parceiro.Model.Auth;
-import com.example.parceiro.Model.FormCadastrarServico;
 import com.example.parceiro.Model.DadosBancarios;
 import com.example.parceiro.Model.FormCadastroParceiro;
-import com.example.parceiro.Model.FormEditarCartao;
+import com.example.parceiro.Model.FormEditarDadosBancarios;
 import com.example.parceiro.Model.Foto;
 import com.example.parceiro.Model.ListaCliente;
 import com.example.parceiro.Model.FormLogin;
@@ -43,8 +43,8 @@ public interface RetrofitServiceGrandson {
     @GET("parceiro/servico/detalhar/{id}")
     Call<Servico> detalharSolicitacao(@Header("Authorization") String auth, @Path("id") int idServico);
 
-    // TODO Fazer Carteira Parceiro
-    @GET("cliente/perfil/carteira")
+
+    @GET("parceiro/perfil/carteira")
     Call<DadosBancarios> getCarteira(@Header("Authorization") String auth);
 
     //OK
@@ -72,7 +72,7 @@ public interface RetrofitServiceGrandson {
     //************* METODOS POSTs ******************//
 
     //OK
-    @POST("parceiro/cadastrar/")
+    @POST("parceiro/cadastrar")
     Call<Resposta> cadastrarParceiro(@Body FormCadastroParceiro parceiro);
     //OK
     @POST("auth/parceiro")
@@ -93,8 +93,8 @@ public interface RetrofitServiceGrandson {
     @PUT("parceiro/alterar/senha")
     Call<Resposta> alterarSenha(@Header("Authorization") String auth, @Body FormEditarSenha formEditarSenha);
 
-    @PUT("cliente/carteira")
-    Call<DadosBancarios> alterarCartao(@Header("Authorization") String auth, @Body FormEditarCartao formEditarCartao);
+    @PUT("parceiro/perfil/carteira")
+    Call<DadosBancarios> alterarCartao(@Header("Authorization") String auth, @Body FormEditarDadosBancarios formEditarDadosBancarios);
 
     @Multipart
     @PUT("foto/parceiro")
@@ -103,10 +103,14 @@ public interface RetrofitServiceGrandson {
     @PUT("parceiro/servico/avaliar/{id}")
     Call<ResponseBody> avaliarCliente(@Header("Authorization") String auth, @Path("id") int id , @Body FormAvaliacao formAvaliacao);
 
+    @PUT("parceiro")
+    Call<Parceiro> alterarParceiro(@Header("Authorization") String auth, @Body FormEditarParceiro formEditarCliente);
 
     @PUT("parceiro/servico/aceitar/{idservico}")
     Call<Resposta> aceitarServico(@Header("Authorization") String auth,@Path("idservico") int id);
 
     @PUT("parceiro/servico/cancelar/{id}")
     Call<Resposta> cancelarServico(@Header("Authorization") String auth, @Path("id") int id);
+
+
 }

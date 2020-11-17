@@ -120,7 +120,7 @@
                     android:backgroundTint="#00FFFFFF"
                     android:text="Recuperar Senha."
                     android:textAllCaps="false"
-                    android:textColor="@color/Azul_Grandson"
+                    android:textColor="@color/Laranja_Grandson"
                     android:textSize="18dp"
                     android:textStyle="bold" />
 

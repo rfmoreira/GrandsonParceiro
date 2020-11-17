@@ -69,11 +69,12 @@ public class RetrofitClientGrandson {
     // URL API LUCAS http://192.168.1.26:8080/api/  http://10.0.0.102:8080/api/
 
 
+
     public static RetrofitServiceGrandson getService(){
 
         if(retrofit == null){
             retrofit = new Retrofit.Builder()
-                    .baseUrl("http://192.168.1.8:8080/api/")
+                    .baseUrl("https://grandson.herokuapp.com/api/")
                     .client(getUnsafeOkHttpClient().build())
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
